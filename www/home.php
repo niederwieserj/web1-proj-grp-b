@@ -10,8 +10,7 @@
 
 <body>
   <?php
-    readfile("./assets/svgs.html");
-    readfile("./assets/toggle-mode.html");
+    readfile("./assets/theme.html");
     readfile("./assets/navbar.html");
   ?>
   
@@ -25,9 +24,6 @@
         <p class="lead my-3 text-white">
           Following the incredible success of the 1957 Laika mission, ESA now wants to shoot a dog to the moon for fun.
         </p>
-        <p class="lead mb-0">
-          <a href="#" class="fw-bold text-white">Continue reading...</a>
-        </p>
       </div>
     </div>
     <div class="row mb-2">
@@ -35,20 +31,20 @@
         <div
           class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
           <div class="col p-4 d-flex flex-column position-static">
-            <strong class="d-inline-block mb-2 text-primary-emphasis">Gardening & Sex</strong>
+            <strong class="d-inline-block mb-2">Gardening & Sex</strong>
             <h3 class="mb-0">Why Jazz puts women in the mood for sex</h3>
             <div class="mb-1 text-body-secondary">Nov 12</div>
             <p class="card-text mb-auto">
               New studies clearly indicate that Jazz has a profound impact on female fertility. Why is that?
-            </p>
-            <a
+              <a
               href="#"
               class="icon-link gap-1 icon-link-hover stretched-link">
-              Continue reading
               <svg class="bi" aria-hidden="true">
-                <use xlink:href="#chevron-right"></use>
+                <use xlink:href="/assets/bootstrap-5.3.8/bootstrap-icons-1.13.1/bootstrap-icons.svg#chevron-right"></use>
               </svg>
             </a>
+            </p>
+            
           </div>
           <div class="col-auto d-none d-lg-block">
             <img src="/assets/images/unsplash-photo-2.jpg" width="200" height="250">
@@ -72,20 +68,19 @@
         <div
           class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
           <div class="col p-4 d-flex flex-column position-static">
-            <strong class="d-inline-block mb-2 text-success-emphasis">Design</strong>
+            <strong class="d-inline-block mb-2">Design</strong>
             <h3 class="mb-0">Students design crappy website</h3>
             <div class="mb-1 text-body-secondary">Nov 11</div>
             <p class="mb-auto">
               And you look at it right now.
+              <a
+                href="#"
+                class="icon-link icon-link-hover stretched-link">
+                <svg class="bi" aria-hidden="true">
+                  <use xlink:href="/assets/bootstrap-5.3.8/bootstrap-icons-1.13.1/bootstrap-icons.svg#chevron-right"></use>
+                </svg>
+              </a>
             </p>
-            <a
-              href="#"
-              class="icon-link gap-1 icon-link-hover stretched-link">
-              Continue reading
-              <svg class="bi" aria-hidden="true">
-                <use xlink:href="#chevron-right"></use>
-              </svg>
-            </a>
           </div>
           <div class="col-auto d-none d-lg-block">
             <img src="assets/images/designer.jpg" width="200" height="250">
@@ -108,7 +103,7 @@
     </div>
     <div class="row g-5">
       <div class="col-md-8">
-        <h3 class="pb-4 mb-4 fst-italic border-bottom">From the Firehose</h3>
+        <h3 class="pb-4 mb-4 fst-italic border-bottom">Featured posts</h3>
         <article class="blog-post">
           <h2 class="display-5 link-body-emphasis mb-1">Sample blog post</h2>
           <p class="blog-post-meta">
@@ -439,7 +434,7 @@
   </main>
   <?php readfile("./assets/footer.html"); ?>
   <script
-    src="/assets/bootstrap/dist/js/bootstrap.bundle.min.js"
+    src="/assets/bootstrap-5.3.8/dist/js/bootstrap.bundle.min.js"
     class="astro-vvvwv3sm"></script>
 </body>
 
