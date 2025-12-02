@@ -60,22 +60,27 @@ CREATE TABLE role_permissions (
 );
 
 -------------------------------------------------
--- Insert statements
+-- Practical statements
 
+-- Add new user
 INSERT INTO users (username, password_hash, email, phone)
 VALUES ('john_doe', 'hashed_password_here', 'john@example.com', '1234567890');
 
+-- Add new login attempt
 INSERT INTO login_logs (user_id, ip_address, device_info, success)
 VALUES (1, '192.168.1.1', 'Chrome on Windows 10', TRUE);
 
+-- Get login history for user
 SELECT login_time, ip_address, device_info, success
 FROM login_logs
-WHERE user_id = 1
+WHERE FK_user_id = 1
 ORDER BY login_time DESC;
 
+-- Set role for user
 INSERT INTO user_roles (user_id, role_id)
 VALUES (1, 2); -- Assign role_id 2 to user_id 1
 
+-- Get user permission (check)
 SELECT p.permission_name
 FROM permissions p
 JOIN role_permissions rp ON p.permission_id = rp.permission_id

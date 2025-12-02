@@ -37,22 +37,24 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <form class="">
+        <form action="/login.php" method="POST">
               <div class="form-floating mb-3">
                 <input
                   type="email"
                   class="form-control rounded-3"
-                  id="floatingInput"
+                  id="user-mail"
+                  name="user-mail"
                   placeholder="name@example.com"
                 />
-                <label for="floatingInput">Email address</label>
+                <label for="user-mail">Email address</label>
               </div>
               <div class="form-floating mb-3">
                 <input
                   type="password"
                   class="form-control rounded-3"
-                  id="floatingPassword"
-                  placeholder="Password"
+                  id="user-pw"
+                  name="user-pw"
+                  placeholder="user-pw"
                 />
                 <label for="floatingPassword">Password</label>
               </div>
