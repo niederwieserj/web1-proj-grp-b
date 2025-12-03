@@ -1,3 +1,11 @@
+<?php
+require_once("login.php");
+
+if (isset($_POST["user-mail"], $_POST["user-pw"])) {
+  login($_POST["user-mail"], $_POST["user-pw"]);
+}
+?>
+
 <!doctype html>
 <html lang="en" data-bs-theme="auto">
 

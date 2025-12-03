@@ -37,7 +37,7 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <form action="/login.php" method="POST">
+        <form action="/home.php" method="POST">
               <div class="form-floating mb-3">
                 <input
                   type="email"
@@ -45,6 +45,7 @@
                   id="user-mail"
                   name="user-mail"
                   placeholder="name@example.com"
+                  required
                 />
                 <label for="user-mail">Email address</label>
               </div>
@@ -55,6 +56,65 @@
                   id="user-pw"
                   name="user-pw"
                   placeholder="user-pw"
+                  required
+                />
+                <label for="floatingPassword">Password</label>
+              </div>
+              <button
+                class="w-100 mb-2 btn btn-lg rounded-3 btn-primary"
+                type="submit"
+                required
+              >
+                Log in
+              </button>
+              <small class="text-body-secondary"
+                >Don't have an account yet? Click <a href="#" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#signupModal">here</a> to sign up.</small
+              >
+            </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="signupModal" tabindex="-1" aria-labelledby="signupModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="signupModalLabel">Sign up</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form action="/create_account.php" method="POST">
+              <div class="form-floating mb-3">
+                <input
+                  type="text"
+                  class="form-control rounded-3"
+                  id="username"
+                  name="username"
+                  placeholder="LedditLionheart"
+                  required
+                />
+                <label for="username">Username</label>
+              </div>
+              <div class="form-floating mb-3">
+                <input
+                  type="email"
+                  class="form-control rounded-3"
+                  id="user-mail"
+                  name="user-mail"
+                  placeholder="name@example.com"
+                  required
+                />
+                <label for="user-mail">Email address</label>
+              </div>
+              <div class="form-floating mb-3">
+                <input
+                  type="password"
+                  class="form-control rounded-3"
+                  id="user-pw"
+                  name="user-pw"
+                  placeholder="user-pw"
+                  required
                 />
                 <label for="floatingPassword">Password</label>
               </div>
@@ -62,10 +122,10 @@
                 class="w-100 mb-2 btn btn-lg rounded-3 btn-primary"
                 type="submit"
               >
-                Log in
+                Sign up
               </button>
               <small class="text-body-secondary"
-                >By clicking Sign up, you agree to the terms of use.</small
+                >By clicking sign up, you agree to our terms of service.</small
               >
             </form>
       </div>
