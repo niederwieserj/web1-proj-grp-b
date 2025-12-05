@@ -31,7 +31,7 @@ function login($user_email, $user_pw):void
     $success = intval($pw_sha256 === $pw_sha256_db);
 
     if ($pw_sha256 === $pw_sha256_db) {
-        echo "Login successful!";
+        // echo "Login successful!";
         $_SESSION["user_id_logged_in"] = $user_id;
         $_SESSION["user_name_logged_in"] = $user_username;
         $_SESSION["user_role"] = "blogger"; // TODO: Load from DB

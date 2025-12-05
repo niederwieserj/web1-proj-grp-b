@@ -1,12 +1,31 @@
 <?php
 require_once("login.php");
+require_once("logout.php");
+require_once("create_account.php");
 
 session_start();
 
-if (isset($_POST["user-mail"], $_POST["user-pw"])) {
-  login($_POST["user-mail"], $_POST["user-pw"]);
-}
+if (isset($_POST["action"]))
+{
+  switch ($_POST["action"])
+  {
+    case "login":
+      if (isset($_POST["user-mail"], $_POST["user-pw"])) {
+        login($_POST["user-mail"], $_POST["user-pw"]);
+      }
+      break;
 
+    case "create-account":
+      if (isset($_POST["username"], $_POST["user-mail"], $_POST["user-pw"])) {
+        create_account($_POST["username"], $_POST["user-mail"], $_POST["user-pw"]);
+      }
+      break;
+
+    case "logout":
+      logout();
+      break;
+  }
+}
 ?>
 
 <!DOCTYPE html>
@@ -20,10 +39,8 @@ if (isset($_POST["user-mail"], $_POST["user-pw"])) {
 </head>
 
 <body>
-  <?php echo "<pre>" . print_r($_SESSION, true) . "</pre>"; ?>
   <?php
     readfile("./assets/theme.html");
-    //readfile("./assets/navbar.php");
     require_once("./assets/navbar.php");
   ?>
   

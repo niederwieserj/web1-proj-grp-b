@@ -15,13 +15,19 @@
                 </a>
                 <? if (isset($_SESSION["user_name_logged_in"])): ?>
                 <div class="dropdown">
-                  <button class="btn btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                     <? echo $_SESSION["user_name_logged_in"]; ?>
                   </button>
                   <ul class="dropdown-menu">
                     <li><a class="dropdown-item" href="#">Profile</a></li>
                     <li><a class="dropdown-item" href="#">My articles</a></li>
-                    <li><a class="dropdown-item" href="#">Log out</a></li>
+                    <li>
+                      <form method="post" action="index.php" class="inline m-0">
+                        <button type="submit" name="action" value="logout" class="dropdown-item">
+                          Log out
+                        </button>
+                      </form>
+                    </li>
                   </ul>
                 </div>
                 <? else: ?>
@@ -84,6 +90,7 @@
               <small class="text-body-secondary"
                 >Don't have an account yet? Click <a href="#" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#signupModal">here</a> to sign up.</small
               >
+              <input type="hidden" name="action" value="login" />
             </form>
       </div>
     </div>
@@ -98,7 +105,7 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <form action="/create_account.php" method="POST">
+        <form action="/index.php" method="POST">
               <div class="form-floating mb-3">
                 <input
                   type="text"
@@ -141,6 +148,7 @@
               <small class="text-body-secondary"
                 >By clicking sign up, you agree to our terms of service.</small
               >
+              <input type="hidden" name="action" value="create-account" />
             </form>
       </div>
     </div>
