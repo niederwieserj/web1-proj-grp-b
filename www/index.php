@@ -1,9 +1,9 @@
 <?php
+session_start();
+
 require_once("login.php");
 require_once("logout.php");
 require_once("create_account.php");
-
-session_start();
 
 if (isset($_POST["action"]))
 {

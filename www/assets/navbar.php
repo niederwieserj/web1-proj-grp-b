@@ -5,18 +5,21 @@
 
             </div>
             <div class="col-4 text-center">
-                <a class="blog-header-logo text-body-emphasis text-decoration-none" href="#">Leddit</a>
+                <a class="blog-header-logo text-body-emphasis text-decoration-none" href="/index.php">
+                    Leddit
+                </a>
             </div>
             <div class="col-4 d-flex justify-content-end align-items-center">
-                <a class="link-secondary" href="#" aria-label="Search">
+                <a class="link-secondary" href="#" aria-label="Search"
+                   data-bs-toggle="modal" data-bs-target="#searchModal">
                     <svg class="bi mx-3" aria-hidden="true" width="20" height="20">
                         <use xlink:href="/assets/bootstrap-5.3.8/bootstrap-icons-1.13.1/bootstrap-icons.svg#search"></use>
                     </svg>
                 </a>
-                <? if (isset($_SESSION["user_name_logged_in"])): ?>
+                <?php if (isset($_SESSION["user_name_logged_in"])): ?>
                 <div class="dropdown">
                   <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    <? echo $_SESSION["user_name_logged_in"]; ?>
+                      <?php echo $_SESSION["user_name_logged_in"]; ?>
                   </button>
                   <ul class="dropdown-menu">
                     <li><a class="dropdown-item" href="#">Profile</a></li>
@@ -30,10 +33,11 @@
                     </li>
                   </ul>
                 </div>
-                <? else: ?>
-                  <a class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#loginModal" href="#">Log in</a>
-                <? endif; ?>
-                </a>
+                <?php else: ?>
+                  <a class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#loginModal" href="#">
+                      Log in
+                  </a>
+                <?php endif; ?>
             </div>
         </div>
     </header>
@@ -154,4 +158,63 @@
     </div>
   </div>
 </div>
+
+    <!-- ========================================================= -->
+    <!-- SEARCH MODAL (Bootstrap)                                  -->
+    <!-- ========================================================= -->
+    <div class="modal fade" id="searchModal" tabindex="-1" aria-labelledby="searchModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5">Search articles</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body">
+
+                    <!-- INPUT -->
+                    <input
+                            type="text"
+                            id="searchBox"
+                            class="form-control form-control-lg mb-3"
+                            placeholder="Type to search..."
+                            autocomplete="off"
+                    >
+
+                    <!-- RESULTS -->
+                    <div id="searchResults" class="list-group"></div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
 </div>
+
+<script>
+    document.getElementById("searchBox").addEventListener("input", async function () {
+        const q = this.value.trim();
+        const results = document.getElementById("searchResults");
+
+        if (q.length < 2) {
+            results.innerHTML = "";
+            return;
+        }
+
+        const res = await fetch("/search_api.php?q=" + encodeURIComponent(q));
+        const data = await res.json();
+
+        let html = "";
+        for (const a of data) {
+            html += `
+            <a href="/article.php?slug=${a.slug}" class="list-group-item list-group-item-action">
+                <strong>${a.title}</strong><br>
+                <small class="text-muted">${a.summary ?? ''}</small>
+            </a>
+        `;
+        }
+
+        results.innerHTML = html;
+    });
+</script>
