@@ -18,10 +18,6 @@ if ($db_obj->connect_error) {
 }
 
 $pw_sha256 = hash('sha256', $user_pw);
-/*
-INSERT INTO users (username, password_hash, email, phone)
-VALUES ('john_doe', 'hashed_password_here', 'john@example.com', '1234567890');
-*/
 
 // Add new account
 $sql = "INSERT INTO `users` (`username`, `password_hash`, `email`) VALUES (?, ?, ?)";

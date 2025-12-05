@@ -1,9 +1,9 @@
 <?php
-function login($username, $password):void
+function login($user_email, $user_pw):void
 {
     require_once("db_access.php");
 
-    if (empty($username) || empty($password)) {
+    if (empty($user_email) || empty($user_pw)) {
         echo "Username or password empty";
         exit();
     }
@@ -16,23 +16,25 @@ function login($username, $password):void
     }
 
     // Check if credentials are valid
-    $pw_sha256 = hash('sha256', $password);
+    $pw_sha256 = hash('sha256', $user_pw);
 
-    $sql = "SELECT `user_id`, `password_hash` FROM `users` WHERE `email` = ?";
+    $sql = "SELECT `user_id`, `username`, `password_hash` FROM `users` WHERE `email` = ?";
     $stmt = $db_obj->prepare($sql);
-    $stmt->bind_param("s", $username);
+    $stmt->bind_param("s", $user_email);
     $stmt->execute();
 
-    $stmt->bind_result($user_id, $pw_sha256_db);
+    $stmt->bind_result($user_id, $user_username, $pw_sha256_db);
     $stmt->fetch();
-    echo $user_id;
+    // echo $user_id;
     $stmt->close();
 
-    $success = 0;
+    $success = intval($pw_sha256 === $pw_sha256_db);
 
     if ($pw_sha256 === $pw_sha256_db) {
-        // echo "Login successful!";
-        $success = 1;
+        echo "Login successful!";
+        $_SESSION["user_id_logged_in"] = $user_id;
+        $_SESSION["user_name_logged_in"] = $user_username;
+        $_SESSION["user_role"] = "blogger"; // TODO: Load from DB
     } else {
         // echo "Login failed";
     }

@@ -13,7 +13,21 @@
                         <use xlink:href="/assets/bootstrap-5.3.8/bootstrap-icons-1.13.1/bootstrap-icons.svg#search"></use>
                     </svg>
                 </a>
-                <a class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#exampleModal" href="#">Log in</a>
+                <? if (isset($_SESSION["user_name_logged_in"])): ?>
+                <div class="dropdown">
+                  <button class="btn btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <? echo $_SESSION["user_name_logged_in"]; ?>
+                  </button>
+                  <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="#">Profile</a></li>
+                    <li><a class="dropdown-item" href="#">My articles</a></li>
+                    <li><a class="dropdown-item" href="#">Log out</a></li>
+                  </ul>
+                </div>
+                <? else: ?>
+                  <a class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#loginModal" href="#">Log in</a>
+                <? endif; ?>
+                </a>
             </div>
         </div>
     </header>
@@ -29,15 +43,15 @@
     </div>
 
 
-<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h1 class="modal-title fs-5" id="exampleModalLabel">Log in</h1>
+        <h1 class="modal-title fs-5" id="loginModalLabel">Log in</h1>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <form action="/home.php" method="POST">
+        <form action="/index.php" method="POST">
               <div class="form-floating mb-3">
                 <input
                   type="email"

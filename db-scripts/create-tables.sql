@@ -15,7 +15,6 @@ CREATE TABLE users (
     username VARCHAR(50) NOT NULL UNIQUE,   -- Username
     password_hash VARCHAR(255) NOT NULL,    -- Encrypted password
     email VARCHAR(100) UNIQUE,              -- Email address
-    phone VARCHAR(15),                      -- Phone number (optional)
     is_active BOOLEAN DEFAULT TRUE,         -- Account activation status
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Account creation time
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP -- Last updated time
@@ -63,8 +62,8 @@ CREATE TABLE role_permissions (
 -- Practical statements
 
 -- Add new user
-INSERT INTO users (username, password_hash, email, phone)
-VALUES ('john_doe', 'hashed_password_here', 'john@example.com', '1234567890');
+INSERT INTO users (username, password_hash, email)
+VALUES ('john_doe', 'hashed_password_here', 'john@example.com');
 
 -- Add new login attempt
 INSERT INTO login_logs (user_id, ip_address, device_info, success)
