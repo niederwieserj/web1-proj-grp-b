@@ -463,9 +463,6 @@ if (isset($_POST["action"]))
     </div>
   </main>
   <?php readfile("./assets/footer.html"); ?>
-  <script
-    src="/assets/bootstrap-5.3.8/dist/js/bootstrap.bundle.min.js"
-    class="astro-vvvwv3sm"></script>
 </body>
 
 </html>
