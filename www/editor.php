@@ -1,18 +1,35 @@
 <?php
-/** @var PDO $pdo */
-session_start();
-require_once("db_access.php");
+    /** @var PDO $pdo */
+    session_start();
+    require_once("db_access.php");
 
-// Check whether Upload-Folder exists
-if (!is_dir("picture-uploads/articles")) {
-    mkdir("picture-uploads/articles", 0777, true);
-}
+
+    // ===============================
+    // ROLE CHECK: Editor Page only for Blogger an Admin
+    // ===============================
+    if (
+            !isset($_SESSION["user_roles"]) ||
+            !is_array($_SESSION["user_roles"]) ||
+            !array_intersect(["blogger", "admin"], $_SESSION["user_roles"])
+    ) {
+        http_response_code(403);
+        die("Access denied. You are not allowed to create articles.");
+    }
+
+    // ===============================
+    // Check whether Upload-Folder exists
+    // ===============================
+    $uploadDir = "picture-uploads/articles";
+    if (!is_dir($uploadDir)) {
+        mkdir($uploadDir, 0777, true);
+    }
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <?php readfile("./assets/head.html"); ?>
+    <title>Create new article</title>
 </head>
 
 <body>
@@ -51,16 +68,20 @@ if (!is_dir("picture-uploads/articles")) {
                 $stmt = $pdo->query($sql);
 
                 foreach ($stmt as $row) {
-                    echo "<option value='{$row['category_id']}'>{$row['name']}</option>";
+                    $id = htmlspecialchars($row['category_id']);
+                    $name = htmlspecialchars($row['name']);
+                    echo "<option value='{$id}'>{$name}</option>";
                 }
                 ?>
             </select>
+            <small class="text-muted">Halte STRG (Windows) oder CMD (Mac), um mehrere Kategorien zu wählen.</small>
         </div>
 
         <!-- IMAGES -->
         <div class="mb-3">
             <label class="form-label">Images</label>
             <input class="form-control" type="file" name="images[]" multiple>
+            <small class="text-muted">Mehrere Bilder können ausgewählt werden.</small>
         </div>
 
         <button class="btn btn-primary" type="submit">
