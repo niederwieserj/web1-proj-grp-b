@@ -21,17 +21,37 @@
                   <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                       <?php echo $_SESSION["user_name_logged_in"]; ?>
                   </button>
-                  <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="#">Profile</a></li>
-                    <li><a class="dropdown-item" href="#">My articles</a></li>
-                    <li>
-                      <form method="post" action="index.php" class="inline m-0">
-                        <button type="submit" name="action" value="logout" class="dropdown-item">
-                          Log out
-                        </button>
-                      </form>
-                    </li>
-                  </ul>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a class="dropdown-item" href="#">Profile</a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="#">My articles</a>
+                        </li>
+
+                        <!-- ADMIN ONLY -->
+                        <?php if (in_array("admin", $_SESSION["user_roles"] ?? [])): ?>
+                            <li>
+                                <a class="dropdown-item" href="/admin.php">
+                                    Admin Panel
+                                </a>
+                            </li>
+                        <?php endif; ?>
+                        <li>
+                            <a class="dropdown-item" href="#">Settings</a>
+                        </li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+
+                        <li>
+                            <form method="post" action="index.php" class="inline m-0">
+                                <button type="submit" name="action" value="logout" class="dropdown-item">
+                                    Log out
+                                </button>
+                            </form>
+                        </li>
+                    </ul>
                 </div>
                 <?php else: ?>
                   <a class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#loginModal" href="#">

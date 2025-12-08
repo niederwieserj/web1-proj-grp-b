@@ -1,11 +1,8 @@
-
--------------------------------------------------
 -- Create DB
 
 CREATE DATABASE blog;
 USE blog;
 
--------------------------------------------------
 -- Create tables in DB
 -- Schema from https://mysql101.com/mysql-tutorial/2025/01/09/Designing-a-Set-of-Tables-for-User-Login-in/
 -- Changes to schema: postfix foreign keys with FK_ to make it more clear
@@ -30,12 +27,15 @@ CREATE TABLE login_logs (
     FOREIGN KEY (FK_user_id) REFERENCES users(user_id) ON DELETE CASCADE
 );
 
+-- ------------------------------
+-- Table Roles to save every Role
 CREATE TABLE roles (
     role_id INT AUTO_INCREMENT PRIMARY KEY, -- Unique role ID
     role_name VARCHAR(50) UNIQUE NOT NULL,  -- Role name (e.g., Admin, User)
     description VARCHAR(255)                -- Description of the role
 );
 
+-- Since one user can have multiple roles and otherwise, an intermediate table is needed
 CREATE TABLE user_roles (
     FK_user_id INT NOT NULL,       -- User ID
     FK_role_id INT NOT NULL,       -- Role ID
@@ -43,13 +43,17 @@ CREATE TABLE user_roles (
     FOREIGN KEY (FK_user_id) REFERENCES users(user_id) ON DELETE CASCADE,
     FOREIGN KEY (FK_role_id) REFERENCES roles(role_id) ON DELETE CASCADE
 );
+-- ------------------------------
 
+-- ------------------------------
+-- What is allowed e. g. view_articles
 CREATE TABLE permissions (
     permission_id INT AUTO_INCREMENT PRIMARY KEY, -- Unique permission ID
     permission_name VARCHAR(100) UNIQUE NOT NULL, -- Permission name
     description VARCHAR(255)                      -- Description of the permission
 );
 
+-- Which role does have which permission
 CREATE TABLE role_permissions (
     FK_role_id INT NOT NULL,          -- Role ID
     FK_permission_id INT NOT NULL,    -- Permission ID
@@ -57,7 +61,7 @@ CREATE TABLE role_permissions (
     FOREIGN KEY (FK_role_id) REFERENCES roles(role_id) ON DELETE CASCADE,
     FOREIGN KEY (FK_permission_id) REFERENCES permissions(permission_id) ON DELETE CASCADE
 );
-
+-- ------------------------------
 
 -- articles
 CREATE TABLE articles (
@@ -105,12 +109,16 @@ CREATE TABLE article_images (
 );
 
 
--------------------------------------------------
+
 -- Practical statements
 
 -- Add new user
 INSERT INTO users (username, password_hash, email)
 VALUES ('john_doe', 'hashed_password_here', 'john@example.com');
+
+-- Add new user
+INSERT INTO users (username, password_hash, email)
+VALUES ('bob', 'hashed_password_here', 'bob@example.com');
 
 -- Add new login attempt
 INSERT INTO login_logs (FK_user_id, ip_address, device_info, success)
@@ -122,16 +130,32 @@ FROM login_logs
 WHERE FK_user_id = 1
 ORDER BY login_time DESC;
 
--- Set role for user
-INSERT INTO user_roles (FK_user_id, FK_role_id)
-VALUES (1, 2);
 
--- Get user permission (check)
-SELECT p.permission_name
-FROM permissions p
-JOIN role_permissions rp ON p.permission_id = rp.permission_id
-JOIN user_roles ur ON rp.role_id = ur.role_id
-WHERE ur.user_id = 1;
+-- Roles
+INSERT INTO roles (role_name, description) VALUES
+('user',    'Can only read'),
+('blogger', 'Can create and edit own articles'),
+('admin',   'Full system access');
+
+-- ------------------------------
+-- Permissions
+INSERT INTO permissions (permission_name, description) VALUES
+('view_articles',      'Read articles'),
+('create_article',     'Create articles'),
+('edit_own_article',   'Edit own articles'),
+('delete_any_article', 'Delete any article'),
+('manage_users',       'Manage users');
+
+-- Roles --> Permissions
+-- user  --> only read
+INSERT INTO role_permissions VALUES (1, 1);
+
+-- blogger --> read, write blog, edit own blog
+INSERT INTO role_permissions VALUES (2, 1), (2, 2), (2, 3);
+
+-- admin --> full rights
+INSERT INTO role_permissions VALUES (3, 1), (3, 2), (3, 3), (3, 4), (3, 5);
+-- ------------------------------
 
 -- Example Categories
 INSERT INTO categories (name, slug, description)
@@ -140,7 +164,6 @@ VALUES
     ('Lifestyle', 'lifestyle', 'Life hacks, habits, and more'),
     ('Travel', 'travel', 'Travel guides and tips'),
     ('Health', 'health', 'Health & wellness articles');
-
 
 -- Exmaple Articles (Alice)
 INSERT INTO articles (FK_user_id, title, slug, summary, content)
