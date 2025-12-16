@@ -114,7 +114,7 @@ CREATE TABLE article_images (
 
 -- Add new user
 INSERT INTO users (username, password_hash, email)
-VALUES ('john_doe', 'hashed_password_here', 'john@example.com');
+VALUES ('john_doe', 'test', 'john@example.com');
 
 -- Add new user
 INSERT INTO users (username, password_hash, email)
@@ -130,6 +130,11 @@ FROM login_logs
 WHERE FK_user_id = 1
 ORDER BY login_time DESC;
 
+
+-- user_roles
+INSERT INTO `user_roles` (`FK_user_id`, `FK_role_id`) VALUES ('1', '2');
+INSERT INTO `user_roles` (`FK_user_id`, `FK_role_id`) VALUES ('1', '3');
+INSERT INTO `user_roles` (`FK_user_id`, `FK_role_id`) VALUES ('2', '2');
 
 -- Roles
 INSERT INTO roles (role_name, description) VALUES

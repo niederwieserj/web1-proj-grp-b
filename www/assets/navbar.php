@@ -13,7 +13,7 @@ $is_admin   = in_array("admin", $roles);
             <!-- Create Article (only Blogger an Admin) -->
             <div class="col-4 d-flex justify-content-start align-items-center">
                 <?php if ($is_blogger): ?>
-                    <a href="/editor.php" class="btn btn-sm btn-success">
+                    <a href="../editor.php" class="btn btn-sm btn-success">
                         Create Article
                     </a>
                 <?php endif; ?>
@@ -111,6 +111,56 @@ $is_admin   = in_array("admin", $roles);
             <a class="nav-item nav-link link-body-emphasis" href="#">Technology</a>
             <a class="nav-item nav-link link-body-emphasis" href="#">Health</a>
         </nav>
+    </div>
+</div>
+
+<!-- ========================================================= -->
+<!-- LOGIN MODAL -->
+<!-- ========================================================= -->
+<div class="modal fade" id="loginModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h1 class="modal-title fs-5">Log in</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+                <form action="../index.php" method="POST">
+
+                    <div class="form-floating mb-3">
+                        <input type="email" class="form-control" name="user-mail" required>
+                        <label>Email address</label>
+                    </div>
+
+                    <div class="form-floating mb-3">
+                        <input type="password" class="form-control" name="user-pw" required>
+                        <label>Password</label>
+                    </div>
+
+                    <input type="hidden" name="action" value="login">
+
+                    <button class="w-100 btn btn-lg btn-primary">
+                        Log in
+                    </button>
+
+                    <div class="text-center mt-3">
+                        <small>
+                            No account yet?
+                            <a href="#"
+                               data-bs-dismiss="modal"
+                               data-bs-toggle="modal"
+                               data-bs-target="#signupModal">
+                                Sign up here
+                            </a>
+                        </small>
+                    </div>
+
+                </form>
+            </div>
+
+        </div>
     </div>
 </div>
 
