@@ -1,8 +1,13 @@
 <?php
+// session data comes from login.php / create_account.php
+
+// save session role of user in $roles
 $roles = $_SESSION["user_roles"] ?? [];
+// get user id of user
 $is_logged_in = isset($_SESSION["user_id_logged_in"]);
-$is_blogger = array_intersect(["blogger", "admin"], $roles);
-$is_admin   = in_array("admin", $roles);
+// assign roles (admin / blogger) based on $roles
+$is_admin     = in_array("admin", $roles);
+$is_blogger   = $is_admin || in_array("blogger", $roles);
 ?>
 
 <div class="container">
