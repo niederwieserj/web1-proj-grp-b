@@ -33,7 +33,7 @@ if (isset($_POST["action"]))
 
 <head>
   <?php readfile("./assets/head.html"); ?>
-  <link href="/assets/css/blog.css" rel="stylesheet" />
+  <link href="./assets/css/blog.css" rel="stylesheet" />
   
   <title>Leddit - Home</title>
 </head>
@@ -70,14 +70,14 @@ if (isset($_POST["action"]))
               href="#"
               class="icon-link gap-1 icon-link-hover stretched-link">
               <svg class="bi" aria-hidden="true">
-                <use xlink:href="/assets/bootstrap-5.3.8/bootstrap-icons-1.13.1/bootstrap-icons.svg#chevron-right"></use>
+                <use xlink:href="./assets/bootstrap-5.3.8/bootstrap-icons-1.13.1/bootstrap-icons.svg#chevron-right"></use>
               </svg>
             </a>
             </p>
             
           </div>
           <div class="col-auto d-none d-lg-block">
-            <img src="/assets/images/unsplash-photo-2.jpg" width="200" height="250">
+            <img src="./assets/images/unsplash-photo-2.jpg" width="200" height="250">
             <!--<svg
                 aria-label="Placeholder: Thumbnail"
                 class="bd-placeholder-img"
@@ -107,13 +107,13 @@ if (isset($_POST["action"]))
                 href="#"
                 class="icon-link icon-link-hover stretched-link">
                 <svg class="bi" aria-hidden="true">
-                  <use xlink:href="/assets/bootstrap-5.3.8/bootstrap-icons-1.13.1/bootstrap-icons.svg#chevron-right"></use>
+                  <use xlink:href="./assets/bootstrap-5.3.8/bootstrap-icons-1.13.1/bootstrap-icons.svg#chevron-right"></use>
                 </svg>
               </a>
             </p>
           </div>
           <div class="col-auto d-none d-lg-block">
-            <img src="assets/images/designer.jpg" width="200" height="250">
+            <img src="./assets/images/designer.jpg" width="200" height="250">
             <!--<svg
                 aria-label="Placeholder: Thumbnail"
                 class="bd-placeholder-img"

@@ -1,34 +1,35 @@
 <?php
-    /** @var PDO $pdo */
-    session_start();
-    require_once("db_access.php");
+/** @var PDO $pdo */
+session_start();
+require_once("db_access.php");
 
+// --------------------------------------------------
+// Check Role: Editor Page only for Blogger an Admin
 
-    // ===============================
-    // ROLE CHECK: Editor Page only for Blogger an Admin
-    // ===============================
-    if (
-            !isset($_SESSION["user_roles"]) ||
-            !is_array($_SESSION["user_roles"]) ||
-            !array_intersect(["blogger", "admin"], $_SESSION["user_roles"])
-    ) {
-        http_response_code(403);
-        die("Access denied. You are not allowed to create articles.");
-    }
+// session data comes from login.php / create_account.php
+$roles = $_SESSION["user_roles"] ?? [];
 
-    // ===============================
-    // Check whether Upload-Folder exists
-    // ===============================
-    $uploadDir = "picture-uploads/articles";
-    if (!is_dir($uploadDir)) {
-        mkdir($uploadDir, 0777, true);
-    }
+if (
+        // check whether current user is admin or blogger
+        !in_array("admin", $roles) &&
+        !in_array("blogger", $roles)
+) {
+    http_response_code(403);
+    die("Access denied. You are not allowed to create articles.");
+}
+// --------------------------------------------------
+
+// --------------------------------------------------
+// define path for uploaded pictures
+$uploadDir = "picture-uploads/articles";
+// --------------------------------------------------
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <?php readfile("./assets/head.html"); ?>
+    <!-- write title in Browser top -->
+    <?php readfile(__DIR__ . "/assets/head.html"); ?>
     <title>Create new article</title>
 </head>
 
@@ -36,14 +37,22 @@
 <?php require_once("./assets/navbar.php"); ?>
 
 <main class="container py-5">
+
     <h1>Create new article</h1>
 
+    <!-- after sending form action = save_articles.php -->
     <form action="save_article.php" method="POST" enctype="multipart/form-data">
 
         <!-- TITLE -->
         <div class="mb-3">
-            <label class="form-label">Title</label>
-            <input class="form-control" name="title" required>
+            <label for="title" class="form-label">Title</label>
+            <input
+                    type="text"
+                    id="title"
+                    name="title"
+                    class="form-control"
+                    required
+            >
         </div>
 
         <!-- SUMMARY -->

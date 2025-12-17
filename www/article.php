@@ -69,8 +69,8 @@ $images = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <html lang="en">
 <head>
     <!-- write title in Browser top -->
-    <title><?= htmlspecialchars($article['title'], ENT_QUOTES, 'UTF-8') ?></title>
     <?php readfile(__DIR__ . "/assets/head.html"); ?>
+    <title><?= htmlspecialchars($article['title'], ENT_QUOTES, 'UTF-8') ?></title>
 </head>
 
 <body>
