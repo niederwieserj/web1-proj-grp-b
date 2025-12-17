@@ -14,5 +14,5 @@ if (!$user_id) die("Invalid user");
 $stmt = $pdo->prepare("UPDATE users SET is_active = 0 WHERE user_id = ?");
 $stmt->execute([$user_id]);
 
-header("Location: admin.php");
+header("Location: admin_panel.php");
 exit;

@@ -68,7 +68,6 @@ CREATE TABLE articles (
     article_id INT AUTO_INCREMENT PRIMARY KEY,
     FK_user_id INT NOT NULL,
     title VARCHAR(255) NOT NULL,
-    slug VARCHAR(255) UNIQUE NOT NULL,
     summary TEXT,
     content LONGTEXT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -85,7 +84,6 @@ CREATE TABLE articles (
 CREATE TABLE categories (
     category_id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) UNIQUE NOT NULL,
-    slug VARCHAR(120) UNIQUE NOT NULL,
     description VARCHAR(255)
 );
 
@@ -163,7 +161,7 @@ INSERT INTO role_permissions VALUES (3, 1), (3, 2), (3, 3), (3, 4), (3, 5);
 -- ------------------------------
 
 -- Example Categories
-INSERT INTO categories (name, slug, description)
+INSERT INTO categories (name, description)
 VALUES
     ('Technology', 'technology', 'Tech news and tutorials'),
     ('Lifestyle', 'lifestyle', 'Life hacks, habits, and more'),
@@ -171,21 +169,19 @@ VALUES
     ('Health', 'health', 'Health & wellness articles');
 
 -- Exmaple Articles (Alice)
-INSERT INTO articles (FK_user_id, title, slug, summary, content)
+INSERT INTO articles (FK_user_id, title, summary, content)
 VALUES
     (1,
      'How to Build a Website in 2025',
-     'build-website-2025',
      'A beginner-friendly guide to building modern websites.',
      'Full article content goes here ... including HTML, text, and formatting.'
     );
 
 -- Exmaple Articles (Bob)
-INSERT INTO articles (FK_user_id, title, slug, summary, content)
+INSERT INTO articles (FK_user_id, title, summary, content)
 VALUES
     (2,
      'Top 10 Places to Visit in Europe',
-     'top-10-places-europe',
      'A curated list of must-see destinations in Europe.',
      'Lots of travel content here ...'
     );
@@ -228,7 +224,7 @@ WHERE MATCH(title, summary) AGAINST ('Europe' IN NATURAL LANGUAGE MODE);
 SELECT a.*, i.file_path, i.alt_text
 FROM articles a
          LEFT JOIN article_images i ON a.article_id = i.FK_article_id
-WHERE a.slug = 'build-website-2025';
+WHERE a.article_id = 1;
 
 
 -- Get Article by Category:
@@ -249,4 +245,4 @@ SELECT a.article_id, a.title
 FROM articles a
          JOIN article_categories ac ON ac.FK_article_id = a.article_id
          JOIN categories c ON c.category_id = ac.FK_category_id
-WHERE c.slug = 'travel';
+WHERE c.category_id = 3;

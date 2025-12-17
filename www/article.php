@@ -4,27 +4,27 @@ session_start();
 require_once("db_access.php");
 
 // --------------------------------------------------
-// $_GET["slug"] comes from URL
-if (!isset($_GET["slug"])) {
+// $_GET["id"] comes from URL
+$id = (int)($_GET["id"] ?? 0);
+
+if ($id <= 0) {
     http_response_code(400);
-    die("Missing slug.");
-} else {
-    $slug = $_GET["slug"];
+    die("Missing article id.");
 }
 // --------------------------------------------------
 
 // --------------------------------------------------
-// Load Article (title, author, timestamp) from SLUG
-$sql = "SELECT articles.*, users.username 
+// Load Article (title, author, timestamp) from article_id
+$sql = "SELECT articles.*, users.username
         FROM articles
         LEFT JOIN users ON users.user_id = articles.FK_user_id
-        WHERE articles.slug = ?
+        WHERE articles.article_id = ?
         LIMIT 1";
 
 // prepare SQL
 $stmt = $pdo->prepare($sql);
 // bind values safely
-$stmt->execute([$slug]);
+$stmt->execute([$id]);
 // get result; fetch, not fetchAll, because we only return a single line; FETCH_ASSOC returns the key and value
 $article = $stmt->fetch(PDO::FETCH_ASSOC);
 

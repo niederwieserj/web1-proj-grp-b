@@ -61,7 +61,7 @@ $is_blogger   = $is_admin || in_array("blogger", $roles);
                             <!-- BLOGGER + ADMIN -->
                             <?php if ($is_blogger): ?>
                                 <li>
-                                    <a class="dropdown-item" href="../my_blogs.php">
+                                    <a class="dropdown-item" href="../my_articles.php">
                                         My Articles
                                     </a>
                                 </li>
@@ -70,12 +70,12 @@ $is_blogger   = $is_admin || in_array("blogger", $roles);
                             <!-- ADMIN ONLY -->
                             <?php if ($is_admin): ?>
                                 <li>
-                                    <a class="dropdown-item" href="../all_blogs.php">
+                                    <a class="dropdown-item" href="../all_articles.php">
                                         All Articles
                                     </a>
                                 </li>
                                 <li>
-                                    <a class="dropdown-item" href="../admin.php">
+                                    <a class="dropdown-item" href="../admin_panel.php">
                                         Admin Panel
                                     </a>
                                 </li>
@@ -235,7 +235,7 @@ $is_blogger   = $is_admin || in_array("blogger", $roles);
         const data = await res.json();
 
         results.innerHTML = data.map(a => `
-        <a href="/article.php?slug=${a.slug}"
+        <a href="/article.php?id=${a.article_id}"
            class="list-group-item list-group-item-action">
             <strong>${a.title}</strong><br>
             <small class="text-muted">${a.summary ?? ""}</small>

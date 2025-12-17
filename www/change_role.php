@@ -25,5 +25,5 @@ $stmt = $pdo->prepare("
 ");
 $stmt->execute([$user_id, $role]);
 
-header("Location: admin.php");
+header("Location: admin_panel.php");
 exit;
