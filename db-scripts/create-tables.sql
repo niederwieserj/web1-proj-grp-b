@@ -72,7 +72,7 @@ CREATE TABLE articles (
     content LONGTEXT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    is_published BOOLEAN DEFAULT TRUE,
+    is_active BOOLEAN DEFAULT TRUE,
 
     FULLTEXT KEY ft_title_summary (title, summary),
     FULLTEXT KEY ft_content (content),

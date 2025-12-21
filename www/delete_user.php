@@ -49,15 +49,26 @@ $pdo->beginTransaction();
 try {
 
     // --------------------------------------------------
-    // Load All Users (title, timestamp) from users
-    $sql = "UPDATE users
+    // Load user to delete and set is_active to 0
+    $sqlUser = "UPDATE users
         SET is_active = 0
         WHERE user_id = ?";
 
     // prepare SQL
-    $stmt = $pdo->prepare($sql);
+    $stmtUser = $pdo->prepare($sqlUser);
     // bind values safely
-    $stmt->execute([$target_user_id]);
+    $stmtUser->execute([$target_user_id]);
+    // --------------------------------------------------
+
+    // --------------------------------------------------
+    // Load articles from user to delete and set is_active to 0
+    $sqlArticles = "
+        UPDATE articles
+        SET is_active = 0
+        WHERE user_id = ?
+    ";
+    $stmtArticles = $pdo->prepare($sqlArticles);
+    $stmtArticles->execute([$target_user_id]);
     // --------------------------------------------------
 
     $pdo->commit();
