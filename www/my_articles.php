@@ -32,7 +32,9 @@ if (
 // Load My Article (title, timestamp) from article_id
 $sql = "SELECT title, created_at, updated_at
         FROM articles
-        WHERE FK_user_id = ? ";
+        WHERE FK_user_id = ?
+        AND is_active = 1
+";
 
 // prepare SQL
 $stmt = $pdo->prepare($sql);
