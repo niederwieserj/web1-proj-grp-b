@@ -11,5 +11,6 @@ Ergänzen:
 * edit_article
 * delete_article
 * all_articles --> Buttons zum edit article und delete article
+* + dazu fix dass man nur articles von active usern sieht
 * my_articles --> Buttons zum edit article und delete article
 * admin_panel
