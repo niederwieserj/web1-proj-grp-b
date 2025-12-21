@@ -112,7 +112,11 @@ CREATE TABLE article_images (
 
 -- Add new user
 INSERT INTO users (username, password_hash, email)
-VALUES ('john_doe', 'test', 'john@example.com');
+VALUES ('lexan', 'lexan', 'lexan@gmail.com');
+
+-- Add new user
+INSERT INTO users (username, password_hash, email)
+VALUES ('john_doe', 'hashed_password_here', 'john@example.com');
 
 -- Add new user
 INSERT INTO users (username, password_hash, email)
@@ -128,17 +132,15 @@ FROM login_logs
 WHERE FK_user_id = 1
 ORDER BY login_time DESC;
 
-
--- user_roles
-INSERT INTO `user_roles` (`FK_user_id`, `FK_role_id`) VALUES ('1', '2');
-INSERT INTO `user_roles` (`FK_user_id`, `FK_role_id`) VALUES ('1', '3');
-INSERT INTO `user_roles` (`FK_user_id`, `FK_role_id`) VALUES ('2', '2');
-
 -- Roles
 INSERT INTO roles (role_name, description) VALUES
-('user',    'Can only read'),
-('blogger', 'Can create and edit own articles'),
-('admin',   'Full system access');
+    ('user',    'Can only read'),
+    ('blogger', 'Can create and edit own articles'),
+    ('admin',   'Full system access');
+
+-- user_roles
+INSERT INTO user_roles (FK_user_id, FK_role_id) VALUES ('1', '3');
+INSERT INTO user_roles (FK_user_id, FK_role_id) VALUES ('2', '2');
 
 -- ------------------------------
 -- Permissions
@@ -163,12 +165,12 @@ INSERT INTO role_permissions VALUES (3, 1), (3, 2), (3, 3), (3, 4), (3, 5);
 -- Example Categories
 INSERT INTO categories (name, description)
 VALUES
-    ('Technology', 'technology', 'Tech news and tutorials'),
-    ('Lifestyle', 'lifestyle', 'Life hacks, habits, and more'),
-    ('Travel', 'travel', 'Travel guides and tips'),
-    ('Health', 'health', 'Health & wellness articles');
+    ('Technology', 'Tech news and tutorials'),
+    ('Lifestyle', 'Life hacks, habits, and more'),
+    ('Travel', 'Travel guides and tips'),
+    ('Health', 'Health & wellness articles');
 
--- Exmaple Articles (Alice)
+-- Example Articles
 INSERT INTO articles (FK_user_id, title, summary, content)
 VALUES
     (1,
@@ -177,7 +179,7 @@ VALUES
      'Full article content goes here ... including HTML, text, and formatting.'
     );
 
--- Exmaple Articles (Bob)
+-- Exmaple Articles
 INSERT INTO articles (FK_user_id, title, summary, content)
 VALUES
     (2,
@@ -208,7 +210,7 @@ VALUES
     (1, '/picture-uploads/articles/diagram.png', 'Website architecture diagram'),
     (2, '/picture-uploads/articles/beach.jpg', 'Sunny beach in Spain');
 
--- Fulltexct Search
+-- Fulltext Search
 
 -- Word "Website":
 SELECT article_id, title, summary
