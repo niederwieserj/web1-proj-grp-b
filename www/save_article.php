@@ -3,7 +3,7 @@ session_start();
 require_once("db_access.php");
 
 // --------------------------------------------------
-// Check whehter user is logged in
+// Check whether user is logged in
 $user_id = $_SESSION["user_id_logged_in"] ?? null;
 if (!$user_id) {
     http_response_code(401);
@@ -45,6 +45,7 @@ if (!$cat) {
 $cat = (int)$cat;
 // --------------------------------------------------
 
+// --------------------------------------------------
 // Transaction as if something goes wrong, a roll back is executed
 $pdo->beginTransaction();
 
