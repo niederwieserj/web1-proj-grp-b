@@ -65,7 +65,7 @@ try {
     $sqlArticles = "
         UPDATE articles
         SET is_active = 0
-        WHERE user_id = ?
+        WHERE FK_user_id = ?
     ";
     $stmtArticles = $pdo->prepare($sqlArticles);
     $stmtArticles->execute([$target_user_id]);
