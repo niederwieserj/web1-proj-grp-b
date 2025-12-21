@@ -31,6 +31,7 @@ if (
 // Load All Articles (title, timestamp)
 $sql = "SELECT title, created_at, updated_at
         FROM articles
+        WHERE is_active = 1;
         ";
 
 // prepare SQL

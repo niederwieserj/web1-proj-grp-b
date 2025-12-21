@@ -23,6 +23,7 @@ $stmt = $pdo->prepare("
     INSERT INTO user_roles (FK_user_id, FK_role_id)
     SELECT ?, role_id FROM roles WHERE role_name = ?
 ");
+
 $stmt->execute([$user_id, $role]);
 
 header("Location: admin_panel.php");
