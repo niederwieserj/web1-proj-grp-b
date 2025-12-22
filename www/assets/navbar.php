@@ -18,7 +18,7 @@ $is_blogger   = $is_admin || in_array("blogger", $roles);
             <!-- Create Article (only Blogger an Admin) -->
             <div class="col-4 d-flex justify-content-start align-items-center">
                 <?php if ($is_blogger): ?>
-                    <a href="../editor.php" class="btn btn-sm btn-success">
+                    <a href="/editor.php" class="btn btn-sm btn-success">
                         Create Article
                     </a>
                 <?php endif; ?>
@@ -27,7 +27,7 @@ $is_blogger   = $is_admin || in_array("blogger", $roles);
 
             <!-- CENTER -->
             <div class="col-4 text-center">
-                <a class="blog-header-logo text-body-emphasis text-decoration-none" href="../index.php">
+                <a class="blog-header-logo text-body-emphasis text-decoration-none" href="/index.php">
                     Leddit
                 </a>
             </div>
@@ -61,7 +61,7 @@ $is_blogger   = $is_admin || in_array("blogger", $roles);
                             <!-- BLOGGER + ADMIN -->
                             <?php if ($is_blogger): ?>
                                 <li>
-                                    <a class="dropdown-item" href="../my_articles.php">
+                                    <a class="dropdown-item" href="/my_articles.php">
                                         My Articles
                                     </a>
                                 </li>
@@ -70,12 +70,12 @@ $is_blogger   = $is_admin || in_array("blogger", $roles);
                             <!-- ADMIN ONLY -->
                             <?php if ($is_admin): ?>
                                 <li>
-                                    <a class="dropdown-item" href="../all_articles.php">
+                                    <a class="dropdown-item" href="/all_articles.php">
                                         All Articles
                                     </a>
                                 </li>
                                 <li>
-                                    <a class="dropdown-item" href="../admin_panel.php">
+                                    <a class="dropdown-item" href="/admin_panel/admin_panel.php">
                                         Admin Panel
                                     </a>
                                 </li>
@@ -84,7 +84,7 @@ $is_blogger   = $is_admin || in_array("blogger", $roles);
                             <li><hr class="dropdown-divider"></li>
 
                             <li>
-                                <form method="post" action="../index.php" class="m-0">
+                                <form method="post" action="/index.php" class="m-0">
                                     <button type="submit"
                                             name="action"
                                             value="logout"
@@ -109,7 +109,7 @@ $is_blogger   = $is_admin || in_array("blogger", $roles);
     <!-- NAV CATEGORIES -->
     <div class="nav-scroller py-1 mb-3 border-bottom">
         <nav class="nav nav-underline justify-content-between">
-            <a class="nav-item nav-link link-body-emphasis active" href="../index.php">Home</a>
+            <a class="nav-item nav-link link-body-emphasis active" href="/index.php">Home</a>
             <a class="nav-item nav-link link-body-emphasis" href="#">Lifestyle</a>
             <a class="nav-item nav-link link-body-emphasis" href="#">Travel</a>
             <a class="nav-item nav-link link-body-emphasis" href="#">Food</a>
@@ -132,7 +132,7 @@ $is_blogger   = $is_admin || in_array("blogger", $roles);
             </div>
 
             <div class="modal-body">
-                <form action="../index.php" method="POST">
+                <form action="/index.php" method="POST">
 
                     <div class="form-floating mb-3">
                         <input type="email" class="form-control" name="user-mail" required>
@@ -180,7 +180,7 @@ $is_blogger   = $is_admin || in_array("blogger", $roles);
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
-                <form action="../index.php" method="POST">
+                <form action="/index.php" method="POST">
                     <div class="form-floating mb-3">
                         <input type="text" class="form-control" name="username" required>
                         <label>Username</label>
