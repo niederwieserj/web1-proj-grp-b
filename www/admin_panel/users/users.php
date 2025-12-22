@@ -1,7 +1,7 @@
 <?php
 /** @var PDO $pdo */
 session_start();
-require_once("db_access.php");
+require_once("../../db_access.php");
 
 // --------------------------------------------------
 // Check whether user is logged in
@@ -20,7 +20,7 @@ $roles = $_SESSION["user_roles"] ?? [];
 
 if (
     // check whether current user is admin
-    !in_array("admin", $roles)
+!in_array("admin", $roles)
 ) {
     http_response_code(403);
     die("Access denied.");
@@ -46,16 +46,16 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <html lang="en">
 <head>
     <!-- write title in Browser top -->
-    <?php readfile(__DIR__ . "/assets/head.html"); ?>
-    <title>Admin Panel</title>
+    <?php readfile("../../assets/head.html"); ?>
+    <title>Users</title>
 </head>
 
 <body>
-<?php require_once("./assets/navbar.php"); ?>
+<?php require_once("../../assets/navbar.php"); ?>
 
 <main class="container py-5">
 
-    <h1>Admin Panel</h1>
+    <h1>Users</h1>
 
 
     <!-- STRUCTURE
@@ -72,7 +72,7 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <table class="table align-middle">
         <thead>
 
-            <!--
+        <!--
             <tr>
                 <?php foreach (array_keys($users[0]) as $column): ?>
                     <th><?= htmlspecialchars($column) ?></th>
@@ -80,13 +80,13 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
             </tr>
             -->
 
-            <tr>
-                <th>Username</th>
-                <th>Email</th>
-                <th>Created</th>
-                <th>Updated</th>
-                <th>Deactivate</th>
-            </tr>
+        <tr>
+            <th>Username</th>
+            <th>Email</th>
+            <th>Created</th>
+            <th>Updated</th>
+            <th>Deactivate</th>
+        </tr>
         </thead>
 
         <tbody>
@@ -118,7 +118,6 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 </main>
 
-<?php readfile("./assets/footer.html"); ?>
+<?php readfile("../../assets/footer.html"); ?>
 </body>
 </html>
-
