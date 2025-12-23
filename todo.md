@@ -2,7 +2,7 @@
 
 * Redesign readme.md for better readability
 * Update issue templates
-* wenn man sich mit falschen anmlededaten anmeldet kommt man zu login failed seite
+* wenn man sich mit falschen Anmeldedaten anmeldet, kommt man zu login failed seite
 * bei all articles soll man möglichkeit haben zu suchen und view articles
 * in editor summary weggeben
 * wenn man 2 selbe accounts erstellt kommt db fehler
@@ -16,4 +16,4 @@ Ergänzen:
 
 # Admin_Panel
 * Categories: edit category und create category ergänzen
-+ Users: edit user ergänzen --> dafür profile page aufsetzen
+* Users: edit user ergänzen → dafür profile page aufsetzen
