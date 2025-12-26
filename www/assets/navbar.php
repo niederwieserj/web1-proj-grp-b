@@ -18,7 +18,7 @@ $is_blogger   = $is_admin || in_array("blogger", $roles);
             <!-- Create Article (only Blogger an Admin) -->
             <div class="col-4 d-flex justify-content-start align-items-center">
                 <?php if ($is_blogger): ?>
-                    <a href="/editor.php" class="btn btn-sm btn-success">
+                    <a href="/articles/editor.php" class="btn btn-sm btn-success">
                         Create Article
                     </a>
                 <?php endif; ?>
@@ -61,7 +61,7 @@ $is_blogger   = $is_admin || in_array("blogger", $roles);
                             <!-- BLOGGER + ADMIN -->
                             <?php if ($is_blogger): ?>
                                 <li>
-                                    <a class="dropdown-item" href="/my_articles.php">
+                                    <a class="dropdown-item" href="/articles/my_articles.php">
                                         My Articles
                                     </a>
                                 </li>
@@ -70,7 +70,7 @@ $is_blogger   = $is_admin || in_array("blogger", $roles);
                             <!-- ADMIN ONLY -->
                             <?php if ($is_admin): ?>
                                 <li>
-                                    <a class="dropdown-item" href="/all_articles.php">
+                                    <a class="dropdown-item" href="/articles/all_articles.php">
                                         All Articles
                                     </a>
                                 </li>
@@ -235,7 +235,7 @@ $is_blogger   = $is_admin || in_array("blogger", $roles);
         const data = await res.json();
 
         results.innerHTML = data.map(a => `
-        <a href="/article.php?id=${a.article_id}"
+        <a href="/articles/article.php?id=${a.article_id}"
            class="list-group-item list-group-item-action">
             <strong>${a.title}</strong><br>
             <small class="text-muted">${a.summary ?? ""}</small>

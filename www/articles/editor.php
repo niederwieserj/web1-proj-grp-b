@@ -1,7 +1,7 @@
 <?php
 /** @var PDO $pdo */
 session_start();
-require_once("db_access.php");
+require_once("../db_access.php");
 
 // --------------------------------------------------
 // Check whether user is logged in
@@ -33,12 +33,12 @@ if (
 <html lang="en">
 <head>
     <!-- write title in Browser top -->
-    <?php readfile(__DIR__ . "/assets/head.html"); ?>
+    <?php readfile("../assets/head.html"); ?>
     <title>Create new article</title>
 </head>
 
 <body>
-<?php require_once("./assets/navbar.php"); ?>
+<?php require_once("../assets/navbar.php"); ?>
 
 <main class="container py-5">
 
@@ -147,6 +147,6 @@ if (
 
 </main>
 
-<?php readfile("./assets/footer.html"); ?>
+<?php readfile("../assets/footer.html"); ?>
 </body>
 </html>
