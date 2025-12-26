@@ -15,6 +15,7 @@ $stmt = $pdo->prepare("
     SELECT article_id, title, summary
     FROM articles
     WHERE MATCH(title, summary) AGAINST(:q IN NATURAL LANGUAGE MODE)
+    AND is_active = 1
     LIMIT 10
 ");
 

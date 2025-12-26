@@ -6,7 +6,6 @@
 * bei all articles soll man möglichkeit haben zu suchen und view articles
 * in editor summary weggeben
 * wenn man 2 selbe accounts erstellt kommt db fehler
-* in all_articles zusätzlich user wer verfasst hat
 
 Ergänzen:
 * edit_article

@@ -1,7 +1,7 @@
 <?php
 /** @var PDO $pdo */
 session_start();
-require_once("db_access.php");
+require_once("../db_access.php");
 
 // --------------------------------------------------
 // Check whether user is logged in
@@ -13,15 +13,14 @@ if (!$user_id) {
 // --------------------------------------------------
 
 // --------------------------------------------------
-// Check Role: My Articles Page only for Blogger an Admin
+// Check Role: All Articles Page only for Admin
 
 // session data comes from login.php / create_account.php
 $roles = $_SESSION["user_roles"] ?? [];
 
 if (
-    // check whether current user is admin or blogger
-    !in_array("admin", $roles) &&
-    !in_array("blogger", $roles)
+    // check whether current user is admin
+    !in_array("admin", $roles)
 ) {
     http_response_code(403);
     die("Access denied.");
@@ -29,17 +28,25 @@ if (
 // --------------------------------------------------
 
 // --------------------------------------------------
-// Load My Article (title, timestamp) from article_id
-$sql = "SELECT title, created_at, updated_at
+// Load All Articles (title, timestamp)
+
+
+$sql = "SELECT article_id, title, created_at, updated_at
         FROM articles
-        WHERE FK_user_id = ?
-        AND is_active = 1
-";
+        WHERE is_active = 1;
+        ";
+
+$sql = "SELECT users.username, articles.article_id, articles.title, articles.created_at, articles.updated_at
+        FROM articles
+        JOIN users
+            ON articles.FK_user_id = users.user_id
+        WHERE articles.is_active = 1;
+        ";
 
 // prepare SQL
 $stmt = $pdo->prepare($sql);
 // bind values safely
-$stmt->execute([$user_id]);
+$stmt->execute();
 // get result; fetchAll, because we return all lines; FETCH_ASSOC returns the key and value
 $articles = $stmt->fetchAll(PDO::FETCH_ASSOC);
 // --------------------------------------------------
@@ -49,16 +56,16 @@ $articles = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <html lang="en">
 <head>
     <!-- write title in Browser top -->
-    <?php readfile(__DIR__ . "/assets/head.html"); ?>
+    <?php readfile("../assets/head.html"); ?>
     <title>My Articles</title>
 </head>
 
 <body>
-<?php require_once("./assets/navbar.php"); ?>
+<?php require_once("../assets/navbar.php"); ?>
 
 <main class="container py-5">
 
-    <h1>My Articles</h1>
+    <h1>All Articles</h1>
 
 
     <!-- STRUCTURE
@@ -73,34 +80,44 @@ $articles = $stmt->fetchAll(PDO::FETCH_ASSOC);
     -->
 
     <?php if (!$articles): ?>
-        <p class="text-muted">You have not written any articles yet.</p>
+        <p class="text-muted">No articles have been written yet.</p>
     <?php else: ?>
 
         <table class="table align-middle">
             <thead>
+            <tr>
+                <th>Username</th>
+                <th>Title</th>
+                <th>Created</th>
+                <th>Updated</th>
+                <th>View</th>
+            </tr>
+
+            <!-- OR
                 <tr>
                     <?php foreach (array_keys($articles[0]) as $column): ?>
                         <th><?= htmlspecialchars($column) ?></th>
                     <?php endforeach; ?>
                 </tr>
-
-                <!-- OR
-                <tr>
-                    <th>Title</th>
-                    <th>Created</th>
-                    <th>Updated</th>
-                </tr>
                 -->
+
             </thead>
 
             <tbody>
-                <?php foreach ($articles as $row): ?>
-                    <tr>
-                        <td><?= htmlspecialchars($row["title"]) ?></td>
-                        <td><?= htmlspecialchars($row["created_at"]) ?></td>
-                        <td><?= htmlspecialchars($row["updated_at"]) ?></td>
-                    </tr>
-                <?php endforeach; ?>
+            <?php foreach ($articles as $row): ?>
+                <tr>
+                    <td><?= htmlspecialchars($row["username"]) ?></td>
+                    <td><?= htmlspecialchars($row["title"]) ?></td>
+                    <td><?= htmlspecialchars($row["created_at"]) ?></td>
+                    <td><?= htmlspecialchars($row["updated_at"]) ?></td>
+
+                    <td>
+                        <a href="article.php?id=<?= (int)$row['article_id'] ?>" class="btn btn-primary btn-sm" target="_blank">
+                            View
+                        </a>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
             </tbody>
         </table>
 
@@ -108,6 +125,6 @@ $articles = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 </main>
 
-<?php readfile("./assets/footer.html"); ?>
+<?php readfile("../assets/footer.html"); ?>
 </body>
 </html>

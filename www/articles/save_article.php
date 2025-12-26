@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once("db_access.php");
+require_once("../db_access.php");
 
 // --------------------------------------------------
 // Check whether user is logged in

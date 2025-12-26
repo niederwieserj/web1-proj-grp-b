@@ -1,7 +1,7 @@
 <?php
 /** @var PDO $pdo */
 session_start();
-require_once("db_access.php");
+require_once("../db_access.php");
 
 // --------------------------------------------------
 // $_GET["id"] comes from URL
@@ -69,12 +69,12 @@ $images = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <html lang="en">
 <head>
     <!-- write title in Browser top -->
-    <?php readfile(__DIR__ . "/assets/head.html"); ?>
+    <?php readfile("../assets/head.html"); ?>
     <title><?= htmlspecialchars($article['title'], ENT_QUOTES, 'UTF-8') ?></title>
 </head>
 
 <body>
-<?php require_once("./assets/navbar.php"); ?>
+<?php require_once("../assets/navbar.php"); ?>
 
 <main class="container py-5">
 
@@ -130,6 +130,6 @@ $images = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 </main>
 
-<?php readfile("./assets/footer.html"); ?>
+<?php readfile("../assets/footer.html"); ?>
 </body>
 </html>
