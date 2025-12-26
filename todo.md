@@ -15,5 +15,4 @@ Ergänzen:
 * my_articles --> Buttons zum edit article und delete article
 
 # Admin_Panel
-* Categories: edit category und create category ergänzen
 * Users: edit user ergänzen → dafür profile page aufsetzen

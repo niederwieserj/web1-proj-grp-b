@@ -28,17 +28,17 @@ if (
 // --------------------------------------------------
 
 // --------------------------------------------------
-// Load All Categories (title, timestamp) from users
-$sql = "SELECT category_id, name, description
+// Load All Categories
+$sqlAllCategories = "SELECT category_id, name, description
         FROM categories
         ";
 
 // prepare SQL
-$stmt = $pdo->prepare($sql);
+$stmt = $pdo->prepare($sqlAllCategories);
 // bind values safely
 $stmt->execute();
 // get result; fetchAll, because we return all lines; FETCH_ASSOC returns the key and value
-$categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
+$allCategories = $stmt->fetchAll(PDO::FETCH_ASSOC);
 // --------------------------------------------------
 ?>
 
@@ -81,7 +81,7 @@ $categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
             <!--
             <tr>
-                <?php foreach (array_keys($categories[0]) as $column): ?>
+                <?php foreach (array_keys($allCategories[0]) as $column): ?>
                     <th><?= htmlspecialchars($column) ?></th>
                 <?php endforeach; ?>
             </tr>
@@ -94,7 +94,7 @@ $categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
         </thead>
 
         <tbody>
-        <?php foreach ($categories as $row): ?>
+        <?php foreach ($allCategories as $row): ?>
             <tr>
                 <td><?= htmlspecialchars($row["name"]) ?></td>
                 <td><?= htmlspecialchars($row["description"]) ?></td>
@@ -108,6 +108,12 @@ $categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             Delete
                         </button>
                     </form>
+                </td>
+
+                <td>
+                    <a href="edit_categories.php?id=<?= (int)$row['category_id'] ?>" class="btn btn-primary btn-sm">
+                        Edit
+                    </a>
                 </td>
             </tr>
         <?php endforeach; ?>
