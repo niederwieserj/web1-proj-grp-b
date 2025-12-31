@@ -17,6 +17,18 @@ CREATE TABLE users (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP -- Last updated time
 );
 
+-- user_image
+CREATE TABLE user_image (
+    image_id INT AUTO_INCREMENT PRIMARY KEY,
+    FK_user_id INT NOT NULL UNIQUE,
+    file_path VARCHAR(255) NOT NULL,
+    alt_text VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (FK_user_id)
+        REFERENCES users(user_id)
+        ON DELETE CASCADE
+);
+
 CREATE TABLE login_logs (
     log_id INT AUTO_INCREMENT PRIMARY KEY,  -- Unique log ID
     FK_user_id INT NOT NULL,                   -- User ID (foreign key)
