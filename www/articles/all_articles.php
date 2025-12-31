@@ -91,6 +91,7 @@ $articles = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <th>Created</th>
                 <th>Updated</th>
                 <th>View</th>
+                <th>Delete</th>
             </tr>
 
             <!-- OR
@@ -116,6 +117,16 @@ $articles = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             View
                         </a>
                     </td>
+
+                    <td>
+                        <form method="post" action="delete_article.php" onsubmit="return confirm('Delete Article?');">
+                            <!-- send value article_id via POST to delete_article -->
+                            <input type="hidden" name="target_article_id" value="<?= (int)$row["article_id"] ?>">
+                            <input type="hidden" name="redirect_to" value="all_articles.php">
+                            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                        </form>
+                    </td>
+
                 </tr>
             <?php endforeach; ?>
             </tbody>

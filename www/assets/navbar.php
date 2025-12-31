@@ -14,6 +14,7 @@ $is_blogger   = $is_admin || in_array("blogger", $roles);
     <header class="border-bottom lh-1 py-3">
         <div class="row flex-nowrap justify-content-between align-items-center">
 
+            <!-- -------------------------------------------------- -->
             <!-- LEFT -->
             <!-- Create Article (only Blogger an Admin) -->
             <div class="col-4 d-flex justify-content-start align-items-center">
@@ -23,15 +24,18 @@ $is_blogger   = $is_admin || in_array("blogger", $roles);
                     </a>
                 <?php endif; ?>
             </div>
+            <!-- -------------------------------------------------- -->
 
-
+            <!-- -------------------------------------------------- -->
             <!-- CENTER -->
             <div class="col-4 text-center">
                 <a class="blog-header-logo text-body-emphasis text-decoration-none" href="/index.php">
                     Leddit
                 </a>
             </div>
+            <!-- -------------------------------------------------- -->
 
+            <!-- -------------------------------------------------- -->
             <!-- RIGHT -->
             <div class="col-4 d-flex justify-content-end align-items-center">
 
@@ -44,6 +48,7 @@ $is_blogger   = $is_admin || in_array("blogger", $roles);
                 </a>
 
                 <?php if ($is_logged_in): ?>
+
                     <div class="dropdown">
                         <button class="btn btn-sm btn-outline-secondary dropdown-toggle"
                                 type="button" data-bs-toggle="dropdown">
@@ -53,7 +58,7 @@ $is_blogger   = $is_admin || in_array("blogger", $roles);
                         <ul class="dropdown-menu dropdown-menu-end">
 
                             <li>
-                                <a class="dropdown-item" href="#">
+                                <a class="dropdown-item" href="/users/user_profile.php">
                                     Profile
                                 </a>
                             </li>
@@ -85,12 +90,17 @@ $is_blogger   = $is_admin || in_array("blogger", $roles);
 
                             <li>
                                 <form method="post" action="/index.php" class="m-0">
+
+                                    <!-- -------------------------------------------------- -->
+                                    <!-- value logout for index.php case  -->
                                     <button type="submit"
                                             name="action"
                                             value="logout"
                                             class="dropdown-item">
                                         Log out
                                     </button>
+                                    <!-- -------------------------------------------------- -->
+
                                 </form>
                             </li>
                         </ul>
@@ -103,6 +113,7 @@ $is_blogger   = $is_admin || in_array("blogger", $roles);
                     </a>
                 <?php endif; ?>
             </div>
+            <!-- -------------------------------------------------- -->
         </div>
     </header>
 
@@ -144,11 +155,14 @@ $is_blogger   = $is_admin || in_array("blogger", $roles);
                         <label>Password</label>
                     </div>
 
-                    <input type="hidden" name="action" value="login">
-
                     <button class="w-100 btn btn-lg btn-primary">
                         Log in
                     </button>
+
+                    <!-- -------------------------------------------------- -->
+                    <!-- value login for index.php case  -->
+                    <input type="hidden" name="action" value="login">
+                    <!-- -------------------------------------------------- -->
 
                     <div class="text-center mt-3">
                         <small>
@@ -193,8 +207,13 @@ $is_blogger   = $is_admin || in_array("blogger", $roles);
                         <input type="password" class="form-control" name="user-pw" required>
                         <label>Password</label>
                     </div>
+
                     <button class="w-100 btn btn-lg btn-primary">Sign up</button>
+
+                    <!-- -------------------------------------------------- -->
+                    <!-- value create-account for index.php case  -->
                     <input type="hidden" name="action" value="create-account">
+                    <!-- -------------------------------------------------- -->
                 </form>
             </div>
         </div>
