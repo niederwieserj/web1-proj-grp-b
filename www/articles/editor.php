@@ -64,20 +64,6 @@ if (
         <!-- -------------------------------------------------- -->
 
         <!-- -------------------------------------------------- -->
-        <!-- SUMMARY -->
-        <div class="mb-3">
-            <label for="summary" class="form-label">Summary</label>
-            <textarea
-                    id="summary"
-                    class="form-control"
-                    name="summary"
-                    rows="2"
-                    required
-            ></textarea>
-        </div>
-        <!-- -------------------------------------------------- -->
-
-        <!-- -------------------------------------------------- -->
         <!-- CONTENT -->
         <div class="mb-3">
             <label for="content" class="form-label">Content</label>

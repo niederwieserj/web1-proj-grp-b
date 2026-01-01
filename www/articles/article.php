@@ -37,17 +37,19 @@ if (!$article) {
 
 // --------------------------------------------------
 // Load Categories (categories which belong to the article)
-$sql = "SELECT name
-        FROM categories
-        JOIN article_categories ON article_categories.FK_category_id = categories.category_id
-        WHERE article_categories.FK_article_id = ?";
+$sql = "
+    SELECT categories.name
+    FROM articles
+    JOIN categories ON categories.category_id = articles.FK_category_id
+    WHERE articles.article_id = ?
+";
 
 // prepare SQL
 $stmt = $pdo->prepare($sql);
 // bind values safely (article_id we get from previous sql, line 29)
 $stmt->execute([$article["article_id"]]);
-// get result; fetchAll returns all results; FETCH_COLUMN only returns the value without the key
-$categories = $stmt->fetchAll(PDO::FETCH_COLUMN);
+// get result; fetch returns a single line
+$category = $stmt->fetchColumn();
 // --------------------------------------------------
 
 // --------------------------------------------------
@@ -93,13 +95,12 @@ $images = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <!-- -------------------------------------------------- -->
 
     <!-- -------------------------------------------------- -->
-    <?php if (!empty($categories)): ?>
+    <?php if ($category): ?>
         <p>
-            <strong>Categories:</strong>
-            <!-- print each category -->
-            <?php foreach ($categories as $cat): ?>
-                <span class="badge bg-secondary"><?= htmlspecialchars($cat, ENT_QUOTES, 'UTF-8') ?></span>
-            <?php endforeach; ?>
+            <strong>Category:</strong>
+            <span class="badge bg-secondary">
+            <?= htmlspecialchars($category, ENT_QUOTES, 'UTF-8') ?>
+        </span>
         </p>
     <?php endif; ?>
     <!-- -------------------------------------------------- -->

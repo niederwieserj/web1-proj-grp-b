@@ -254,11 +254,11 @@ $is_blogger   = $is_admin || in_array("blogger", $roles);
         const data = await res.json();
 
         results.innerHTML = data.map(a => `
-        <a href="/articles/article.php?id=${a.article_id}"
-           class="list-group-item list-group-item-action">
-            <strong>${a.title}</strong><br>
-            <small class="text-muted">${a.summary ?? ""}</small>
-        </a>
-    `).join("");
+            <a href="/articles/article.php?id=${a.article_id}"
+               class="list-group-item list-group-item-action">
+                <strong>${a.title}</strong>
+            </a>
+        `).join("");
+
     });
 </script>

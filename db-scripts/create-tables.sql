@@ -75,23 +75,6 @@ CREATE TABLE role_permissions (
 );
 -- ------------------------------
 
--- articles
-CREATE TABLE articles (
-    article_id INT AUTO_INCREMENT PRIMARY KEY,
-    FK_user_id INT NOT NULL,
-    title VARCHAR(255) NOT NULL,
-    summary TEXT,
-    content LONGTEXT NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    is_active BOOLEAN DEFAULT TRUE,
-
-    FULLTEXT KEY ft_title_summary (title, summary),
-    FULLTEXT KEY ft_content (content),
-
-    FOREIGN KEY (FK_user_id) REFERENCES users(user_id) ON DELETE CASCADE
-) ENGINE=InnoDB;
-
 -- categories
 CREATE TABLE categories (
     category_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -99,14 +82,24 @@ CREATE TABLE categories (
     description VARCHAR(255)
 );
 
--- N:M Zuordnungstabelle article_categories
-CREATE TABLE article_categories (
-    FK_article_id INT NOT NULL,
-    FK_category_id INT NOT NULL,
-    PRIMARY KEY (FK_article_id, FK_category_id),
-    FOREIGN KEY (FK_article_id) REFERENCES articles(article_id) ON DELETE CASCADE,
-    FOREIGN KEY (FK_category_id) REFERENCES categories(category_id) ON DELETE CASCADE
-);
+-- articles
+CREATE TABLE articles (
+      article_id INT AUTO_INCREMENT PRIMARY KEY,
+      FK_user_id INT NOT NULL,
+      FK_category_id INT NOT NULL,
+      title VARCHAR(255) NOT NULL,
+      content LONGTEXT NOT NULL,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+      is_active BOOLEAN DEFAULT TRUE,
+
+      FULLTEXT KEY ft_title (title),
+      FULLTEXT KEY ft_content (content),
+
+      FOREIGN KEY (FK_user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+      FOREIGN KEY (FK_category_id) REFERENCES categories(category_id) ON DELETE RESTRICT
+) ENGINE=InnoDB;
+
 
 -- article_images
 CREATE TABLE article_images (
@@ -153,6 +146,7 @@ INSERT INTO roles (role_name, description) VALUES
 -- user_roles
 INSERT INTO user_roles (FK_user_id, FK_role_id) VALUES ('1', '3');
 INSERT INTO user_roles (FK_user_id, FK_role_id) VALUES ('2', '2');
+INSERT INTO user_roles (FK_user_id, FK_role_id) VALUES ('3', '2');
 
 -- ------------------------------
 -- Permissions
@@ -183,37 +177,22 @@ VALUES
     ('Health', 'Health & wellness articles');
 
 -- Example Articles
-INSERT INTO articles (FK_user_id, title, summary, content)
+INSERT INTO articles (FK_user_id, FK_category_id, title, content)
 VALUES
     (1,
+     2,
      'How to Build a Website in 2025',
-     'A beginner-friendly guide to building modern websites.',
-     'Full article content goes here ... including HTML, text, and formatting.'
+     'A beginner-friendly guide to building modern websites.'
     );
 
 -- Exmaple Articles
-INSERT INTO articles (FK_user_id, title, summary, content)
+INSERT INTO articles (FK_user_id, FK_category_id, title, content)
 VALUES
     (2,
+     2,
      'Top 10 Places to Visit in Europe',
-     'A curated list of must-see destinations in Europe.',
-     'Lots of travel content here ...'
+     'A curated list of must-see destinations in Europe.'
     );
-
-
--- Link Categories to Articles
-
--- Article 1 --> Technology + Lifestyle
-INSERT INTO article_categories (FK_article_id, FK_category_id)
-VALUES
-    (1, 1),
-    (1, 2);
-
--- Article 1 --> Travel
-INSERT INTO article_categories (FK_article_id, FK_category_id)
-VALUES
-    (2, 3);
-
 
 -- Add picture to article
 INSERT INTO article_images (FK_article_id, file_path, alt_text)
@@ -225,14 +204,14 @@ VALUES
 -- Fulltext Search
 
 -- Word "Website":
-SELECT article_id, title, summary
+SELECT article_id, title
 FROM articles
-WHERE MATCH(title, summary) AGAINST ('website' IN NATURAL LANGUAGE MODE);
+WHERE MATCH(title) AGAINST ('website' IN NATURAL LANGUAGE MODE);
 
 -- Word "Europe":
-SELECT article_id, title, summary
+SELECT article_id, title
 FROM articles
-WHERE MATCH(title, summary) AGAINST ('Europe' IN NATURAL LANGUAGE MODE);
+WHERE MATCH(title) AGAINST ('Europe' IN NATURAL LANGUAGE MODE);
 
 -- Get Article + Picture:
 SELECT a.*, i.file_path, i.alt_text
@@ -241,11 +220,10 @@ FROM articles a
 WHERE a.article_id = 1;
 
 
--- Get Article by Category:
+-- Get Article by Category
 SELECT a.title, c.name AS category
 FROM articles a
-         JOIN article_categories ac ON ac.FK_article_id = a.article_id
-         JOIN categories c ON c.category_id = ac.FK_category_id
+         JOIN categories c ON c.category_id = a.FK_category_id
 WHERE a.article_id = 1;
 
 -- Get every Article from User:
@@ -254,9 +232,7 @@ FROM articles
 WHERE FK_user_id = 1
 ORDER BY created_at DESC;
 
--- Get every Article from Category:
-SELECT a.article_id, a.title
-FROM articles a
-         JOIN article_categories ac ON ac.FK_article_id = a.article_id
-         JOIN categories c ON c.category_id = ac.FK_category_id
-WHERE c.category_id = 3;
+-- Get every Article from Category
+SELECT article_id, title
+FROM articles
+WHERE FK_category_id = 3;

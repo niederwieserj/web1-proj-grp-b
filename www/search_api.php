@@ -12,9 +12,9 @@ if (strlen($q) < 2) {
 }
 
 $stmt = $pdo->prepare("
-    SELECT article_id, title, summary
+    SELECT article_id, title
     FROM articles
-    WHERE MATCH(title, summary) AGAINST(:q IN NATURAL LANGUAGE MODE)
+    WHERE MATCH(title, content) AGAINST(:q IN NATURAL LANGUAGE MODE)
     AND is_active = 1
     LIMIT 10
 ");
