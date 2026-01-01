@@ -30,19 +30,18 @@ if (
 // --------------------------------------------------
 // Read input from editor.php
 $title   = trim($_POST["title"] ?? "");
-$summary = trim($_POST["summary"] ?? "");
 $content = trim($_POST["content"] ?? "");
-$cat     = $_POST["category"] ?? null;
+$category = $_POST["category"] ?? null;
 
 if ($title === "" || $content === "") {
     die("Title and content are required");
 }
 
-if (!$cat) {
+if (!$category) {
     die("Category required");
 }
 
-$cat = (int)$cat;
+$category = (int)$category;
 // --------------------------------------------------
 
 // --------------------------------------------------
@@ -53,25 +52,19 @@ try {
     // --------------------------------------------------
     // Insert article into DB
     $stmtArticle = $pdo->prepare("
-        INSERT INTO articles (FK_user_id, title, summary, content)
+        INSERT INTO articles (FK_user_id, FK_category_id, title, content)
         VALUES (?, ?, ?, ?)
     ");
     $stmtArticle->execute([
         $user_id,
+        $category,
         $title,
-        $summary,
         $content
     ]);
 
+    // get article_id in order to assign categories to articles in the tavle article_cateogries in the next step
     $article_id = (int)$pdo->lastInsertId();
-
     // --------------------------------------------------
-    // Insert category
-    $stmtCat = $pdo->prepare("
-        INSERT INTO article_categories (FK_article_id, FK_category_id)
-        VALUES (?, ?)
-    ");
-    $stmtCat->execute([$article_id, $cat]);
 
     // --------------------------------------------------
     // Images
