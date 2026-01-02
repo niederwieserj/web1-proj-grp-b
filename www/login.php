@@ -1,97 +1,101 @@
 <?php
-function login($user_email, $user_pw):void
+function login(string $user_email, string $user_pw): void
 {
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
+
     require_once("db_access.php");
 
-    if (empty($user_email) || empty($user_pw)) {
-        echo "Username or password empty";
-        exit();
+    // --------------------------------------------------
+    // Check input
+    if ($user_email === "" || $user_pw === "") {
+        $_SESSION["flash_error"] = "Email or password empty.";
+        header("Location: /index.php");
+        exit;
     }
+    // --------------------------------------------------
 
-    $db_obj = new mysqli($db_host, $db_user, $db_password, $db_database, $db_port);
+    // --------------------------------------------------
+    // DB connection
+    $db = new mysqli($db_host, $db_user, $db_password, $db_database, $db_port);
 
-    if ($db_obj->connect_error) {
-        echo "Connection Error: " . $db_obj->connect_error;
-        exit();
+    if ($db->connect_error) {
+        $_SESSION["flash_error"] = "Database connection failed.";
+        header("Location: /index.php");
+        exit;
     }
+    // --------------------------------------------------
 
-    // ===============================
-    // LOAD USER DATA + CORRESPONDING ROLE
-    // ===============================
+    // --------------------------------------------------
+    // Load user
     $sql = "
-        SELECT 
-            u.user_id,
-            u.username,
-            u.password_hash,
-            r.role_name
-        FROM users u
-        LEFT JOIN user_roles ur ON ur.FK_user_id = u.user_id
-        LEFT JOIN roles r ON r.role_id = ur.FK_role_id
-        WHERE u.email = ?
+        SELECT
+            user_id,
+            username,
+            password_hash,
+            role
+        FROM users
+        WHERE email = ?
+          AND is_active = 1
+        LIMIT 1
     ";
 
-    $stmt = $db_obj->prepare($sql);
+    $stmt = $db->prepare($sql);
     $stmt->bind_param("s", $user_email);
     $stmt->execute();
     $result = $stmt->get_result();
 
     if ($result->num_rows === 0) {
-        echo "Login failed";
-        exit();
+        $_SESSION["flash_error"] = "Invalid email or password.";
+        header("Location: /index.php");
+        exit;
     }
 
-    $roles = [];
-    $user = null;
-
-    while ($row = $result->fetch_assoc()) {
-        if ($user === null) {
-            $user = $row;
-        }
-
-        if ($row["role_name"]) {
-            $roles[] = $row["role_name"];
-        }
-    }
-
+    $user = $result->fetch_assoc();
     $stmt->close();
+    // --------------------------------------------------
 
-
-    // ===============================
-    // Check if credentials are valid
-    // ===============================
-    $pw_sha256 = hash("sha256", $user_pw);
-
-    if ($pw_sha256 !== $user["password_hash"]) {
-        echo "Login failed";
-        exit();
+    // --------------------------------------------------
+    // Password check
+    if (hash("sha256", $user_pw) !== $user["password_hash"]) {
+        $_SESSION["flash_error"] = "Invalid email or password.";
+        header("Location: /index.php");
+        exit;
     }
+    // --------------------------------------------------
 
-    // ===============================
-    // Set Session Values
-    // ===============================
-    $_SESSION["user_id_logged_in"]   = $user["user_id"];
+    // --------------------------------------------------
+    // Set session
+    $_SESSION["user_id_logged_in"]   = (int)$user["user_id"];
     $_SESSION["user_name_logged_in"] = $user["username"];
-    $_SESSION["user_roles"]          = $roles; // ARRAY!
+    $_SESSION["user_role"]           = $user["role"]; // 'admin' or 'blogger'
+    // --------------------------------------------------
 
-    // ===============================
-    // Insert Login Log
-    // ===============================
-    $success = 1;
+    // --------------------------------------------------
+    // Login log
+    $sql = "
+        INSERT INTO login_logs (
+            FK_user_id,
+            ip_address,
+            device_info,
+            success
+        ) VALUES (?, ?, ?, 1)
+    ";
 
-    $sql = "INSERT INTO login_logs (FK_user_id, ip_address, device_info, success)
-            VALUES (?, ?, ?, ?)";
-
-    $stmt = $db_obj->prepare($sql);
+    $stmt = $db->prepare($sql);
     $stmt->bind_param(
-        "issi",
+        "iss",
         $user["user_id"],
         $_SERVER["REMOTE_ADDR"],
-        $_SERVER["HTTP_USER_AGENT"],
-        $success
+        $_SERVER["HTTP_USER_AGENT"]
     );
     $stmt->execute();
     $stmt->close();
+    // --------------------------------------------------
 
-    $db_obj->close();
+    $db->close();
+
+    header("Location: /index.php");
+    exit;
 }
-?>
