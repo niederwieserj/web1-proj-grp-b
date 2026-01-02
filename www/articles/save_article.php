@@ -12,16 +12,12 @@ if (!$user_id) {
 // --------------------------------------------------
 
 // --------------------------------------------------
-// Check Role: save article only Blogger an Admin
+// Check role (admin or blogger only)
 
 // session data comes from login.php / create_account.php
-$roles = $_SESSION["user_roles"] ?? [];
+$user_role = $_SESSION["user_role"] ?? null;
 
-if (
-    // check whether current user is admin or blogger
-    !in_array("admin", $roles) &&
-    !in_array("blogger", $roles)
-) {
+if (!in_array($user_role, ["admin", "blogger"], true)) {
     http_response_code(403);
     die("Access denied.");
 }

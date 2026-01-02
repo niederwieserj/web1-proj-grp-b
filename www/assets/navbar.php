@@ -1,13 +1,13 @@
 <?php
 // session data comes from login.php / create_account.php
 
-// save session role of user in $roles
-$roles = $_SESSION["user_roles"] ?? [];
+// save session role of user in $user_role
+$user_role    = $_SESSION["user_role"] ?? null;
 // get user id of user
 $is_logged_in = isset($_SESSION["user_id_logged_in"]);
 // assign roles (admin / blogger) based on $roles
-$is_admin     = in_array("admin", $roles);
-$is_blogger   = $is_admin || in_array("blogger", $roles);
+$is_admin   = ($user_role === "admin");
+$is_blogger = ($user_role === "admin" || $user_role === "blogger");
 ?>
 
 <div class="container">
@@ -52,7 +52,7 @@ $is_blogger   = $is_admin || in_array("blogger", $roles);
                     <div class="dropdown">
                         <button class="btn btn-sm btn-outline-secondary dropdown-toggle"
                                 type="button" data-bs-toggle="dropdown">
-                            <?= htmlspecialchars($_SESSION["user_name_logged_in"]) ?>
+                            <?= htmlspecialchars($_SESSION["user_name_logged_in"] ?? "") ?>
                         </button>
 
                         <ul class="dropdown-menu dropdown-menu-end">
@@ -130,9 +130,8 @@ $is_blogger   = $is_admin || in_array("blogger", $roles);
     </div>
 </div>
 
-<!-- ========================================================= -->
+<!-- -------------------------------------------------- -->
 <!-- LOGIN MODAL -->
-<!-- ========================================================= -->
 <div class="modal fade" id="loginModal" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -143,15 +142,30 @@ $is_blogger   = $is_admin || in_array("blogger", $roles);
             </div>
 
             <div class="modal-body">
+                <!-- sending form to index.php -->
                 <form action="/index.php" method="POST">
 
                     <div class="form-floating mb-3">
-                        <input type="email" class="form-control" name="user-mail" required>
+
+                            <input
+                                    type="email"
+                                    class="form-control"
+                                    name="user-mail"
+                                    required
+                            >
+
                         <label>Email address</label>
                     </div>
 
                     <div class="form-floating mb-3">
-                        <input type="password" class="form-control" name="user-pw" required>
+
+                            <input
+                                    type="password"
+                                    class="form-control"
+                                    name="user-pw"
+                                    required
+                            >
+
                         <label>Password</label>
                     </div>
 
@@ -182,10 +196,10 @@ $is_blogger   = $is_admin || in_array("blogger", $roles);
         </div>
     </div>
 </div>
+<!-- -------------------------------------------------- -->
 
-<!-- ========================================================= -->
+<!-- -------------------------------------------------- -->
 <!-- SIGNUP MODAL                                              -->
-<!-- ========================================================= -->
 <div class="modal fade" id="signupModal" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -194,17 +208,39 @@ $is_blogger   = $is_admin || in_array("blogger", $roles);
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
+                <!-- sending form to index.php -->
                 <form action="/index.php" method="POST">
                     <div class="form-floating mb-3">
-                        <input type="text" class="form-control" name="username" required>
+
+                            <input
+                                    type="text"
+                                    class="form-control"
+                                    name="username"
+                                    required
+                            >
+
                         <label>Username</label>
                     </div>
                     <div class="form-floating mb-3">
-                        <input type="email" class="form-control" name="user-mail" required>
+
+                            <input
+                                    type="email"
+                                    class="form-control"
+                                    name="user-mail"
+                                    required
+                            >
+
                         <label>Email address</label>
                     </div>
                     <div class="form-floating mb-3">
-                        <input type="password" class="form-control" name="user-pw" required>
+
+                            <input
+                                    type="password"
+                                    class="form-control"
+                                    name="user-pw"
+                                    required
+                            >
+
                         <label>Password</label>
                     </div>
 
@@ -219,46 +255,46 @@ $is_blogger   = $is_admin || in_array("blogger", $roles);
         </div>
     </div>
 </div>
+<!-- -------------------------------------------------- -->
 
-<!-- ========================================================= -->
-<!-- SEARCH MODAL                                              -->
-<!-- ========================================================= -->
-<div class="modal fade" id="searchModal" tabindex="-1">
+<!-- -------------------------------------------------- -->
+<!-- SEARCH MODAL -->
+<div class="modal fade" id="searchModal" tabindex="-1" aria-labelledby="searchModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
+
             <div class="modal-header">
-                <h1 class="modal-title fs-5">Search articles</h1>
+                <h1 class="modal-title fs-5" id="searchModalLabel">Search articles</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
+
             <div class="modal-body">
-                <input type="text" id="searchBox"
-                       class="form-control form-control-lg mb-3"
-                       placeholder="Type to search..." autocomplete="off">
-                <div id="searchResults" class="list-group"></div>
+                <form method="get" action="/search.php" class="d-flex gap-2">
+                    <input
+                            type="text"
+                            name="q"
+                            class="form-control form-control-lg"
+                            placeholder="Type to search..."
+                            minlength="2"
+                            required
+                            autocomplete="off"
+                    >
+
+                    <button type="submit" class="btn btn-md btn-primary">
+                        Search
+                    </button>
+
+                    <a href="/search.php" class="btn btn-md btn-outline-secondary">
+                        All articles
+                    </a>
+                </form>
+
+                <div class="form-text mt-2">
+                    Enter at least 2 characters.
+                </div>
             </div>
+
         </div>
     </div>
 </div>
-
-<script>
-    document.getElementById("searchBox").addEventListener("input", async function () {
-        const q = this.value.trim();
-        const results = document.getElementById("searchResults");
-
-        if (q.length < 2) {
-            results.innerHTML = "";
-            return;
-        }
-
-        const res = await fetch("/search_api.php?q=" + encodeURIComponent(q));
-        const data = await res.json();
-
-        results.innerHTML = data.map(a => `
-            <a href="/articles/article.php?id=${a.article_id}"
-               class="list-group-item list-group-item-action">
-                <strong>${a.title}</strong>
-            </a>
-        `).join("");
-
-    });
-</script>
+<!-- -------------------------------------------------- -->

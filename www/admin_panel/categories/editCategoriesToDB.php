@@ -13,9 +13,12 @@ if (!$user_id) {
 // --------------------------------------------------
 
 // --------------------------------------------------
-// Check role
-$roles = $_SESSION["user_roles"] ?? [];
-if (!in_array("admin", $roles)) {
+// Check role (admin only)
+
+// session data comes from login.php / create_account.php
+$user_role = $_SESSION["user_role"] ?? null;
+
+if ($user_role !== "admin") {
     http_response_code(403);
     die("Access denied.");
 }

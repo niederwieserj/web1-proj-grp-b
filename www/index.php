@@ -39,12 +39,25 @@ if (isset($_POST["action"]))
 </head>
 
 <body>
-  <?php
-    readfile("./assets/theme.html");
-    require_once("./assets/navbar.php");
-  ?>
-  
-  
+    <?php
+        readfile("./assets/theme.html");
+        require_once("./assets/navbar.php");
+
+        if (!empty($_SESSION["flash_error"])): ?>
+          <div class="toast-container position-fixed top-0 end-0 p-3">
+              <div class="toast text-bg-danger show" role="alert">
+                  <div class="toast-header">
+                      <strong class="me-auto">Error</strong>
+                      <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
+                  </div>
+                  <div class="toast-body">
+                      <?= htmlspecialchars($_SESSION["flash_error"]) ?>
+                  </div>
+              </div>
+          </div>
+        <?php unset($_SESSION["flash_error"]); endif;
+    ?>
+
   <main class="container">
     <div class="p-4 p-md-5 mb-4 rounded text-body-emphasis" style="background-image: url(&quot;/assets/images/space-1-horizontal.jpg&quot;); background-position: center; background-repeat: no-repeat; background-size: 100% auto;">
       <div class="col-lg-6 px-0">
