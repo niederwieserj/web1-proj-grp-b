@@ -19,7 +19,7 @@ $is_blogger = ($user_role === "admin" || $user_role === "blogger");
             <!-- Create Article (only Blogger an Admin) -->
             <div class="col-4 d-flex justify-content-start align-items-center">
                 <?php if ($is_blogger): ?>
-                    <a href="/articles/editor.php" class="btn btn-sm btn-success">
+                    <a href="/articles/create_article.php" class="btn btn-sm btn-success">
                         Create Article
                     </a>
                 <?php endif; ?>
