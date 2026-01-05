@@ -88,6 +88,7 @@ $articles = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <th>Created</th>
                 <th>Updated</th>
                 <th>View</th>
+                <th>Edit</th>
                 <th>Delete</th>
             </tr>
 
@@ -112,6 +113,12 @@ $articles = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     <td>
                         <a href="article.php?id=<?= (int)$row['article_id'] ?>" class="btn btn-primary btn-sm" target="_blank">
                             View
+                        </a>
+                    </td>
+
+                    <td>
+                        <a href="edit_article.php?id=<?= (int)$row['article_id'] ?>&return=all_articles.php" class="btn btn-primary btn-sm">
+                            Edit
                         </a>
                     </td>
 

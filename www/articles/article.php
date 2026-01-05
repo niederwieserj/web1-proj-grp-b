@@ -65,6 +65,16 @@ $stmt->execute([$article["article_id"]]);
 // get result; fetchAll returns all results; FETCH_COLUMN only returns the value without the key
 $images = $stmt->fetchAll(PDO::FETCH_ASSOC);
 // --------------------------------------------------
+
+// --------------------------------------------------
+// Permission check for Edit button (admin OR owner)
+
+$currentUserId = $_SESSION["user_id_logged_in"] ?? null;
+$currentRole   = $_SESSION["user_role"] ?? null;
+
+$isOwner = ($currentUserId && $article["FK_user_id"] == $currentUserId);
+$isAdmin = ($currentRole === "admin");
+// --------------------------------------------------
 ?>
 
 <!DOCTYPE html>
@@ -79,6 +89,21 @@ $images = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <?php require_once("../assets/navbar.php"); ?>
 
 <main class="container py-5">
+
+    <!-- edit article button -->
+    <?php if ($isAdmin || $isOwner): ?>
+        <!-- -------------------------------------------------- -->
+        <!-- Edit Article Button -->
+        <div class="mb-3">
+            <a
+                    href="edit_article.php?id=<?= (int)$article['article_id'] ?>&return=article.php?id=<?= (int)$article['article_id'] ?>"
+                    class="btn btn-sm btn-outline-primary"
+            >
+                Edit Article
+            </a>
+        </div>
+        <!-- -------------------------------------------------- -->
+    <?php endif; ?>
 
     <!-- -------------------------------------------------- -->
     <!-- print title of article -->

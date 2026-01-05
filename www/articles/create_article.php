@@ -20,7 +20,7 @@ $user_role = $_SESSION["user_role"] ?? null;
 
 if (!in_array($user_role, ["admin", "blogger"], true)) {
     http_response_code(403);
-    die("Access denied.");
+    die("You are not allowed to create articles.");
 }
 // --------------------------------------------------
 ?>
@@ -65,8 +65,8 @@ if (!in_array($user_role, ["admin", "blogger"], true)) {
             <label for="content" class="form-label">Content</label>
             <textarea
                     id="content"
-                    class="form-control"
                     name="content"
+                    class="form-control"
                     rows="10"
                     required
             ></textarea>

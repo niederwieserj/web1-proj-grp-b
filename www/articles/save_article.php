@@ -24,7 +24,7 @@ if (!in_array($user_role, ["admin", "blogger"], true)) {
 // --------------------------------------------------
 
 // --------------------------------------------------
-// Read input from editor.php
+// Read input from create_article.php
 $title   = trim($_POST["title"] ?? "");
 $content = trim($_POST["content"] ?? "");
 $category = $_POST["category"] ?? null;
