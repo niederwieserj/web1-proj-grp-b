@@ -2,6 +2,7 @@
 /** @var PDO $pdo */
 session_start();
 require_once("../db_access.php");
+require_once("../display_content/format_date.php");
 
 // --------------------------------------------------
 // $_GET["id"] comes from URL
@@ -137,7 +138,7 @@ $isAdmin = ($currentRole === "admin");
                             <use xlink:href="./../assets/bootstrap-5.3.8/bootstrap-icons-1.13.1/bootstrap-icons.svg#calendar-event">
                             </use>
                         </svg>
-                        <?php echo date_format(date_create_from_format("Y-m-d H:i:s", $article["created_at"]), "M j, Y");?>
+                        <?php echo format_date($article["created_at"]);?>
                     </span>
 
                     <!-- Edit article button -->

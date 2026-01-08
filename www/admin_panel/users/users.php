@@ -91,8 +91,8 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <tr>
                 <td><?= htmlspecialchars($row["username"]) ?></td>
                 <td><?= htmlspecialchars($row["email"]) ?></td>
-                <td><?= htmlspecialchars($row["created_at"]) ?></td>
-                <td><?= htmlspecialchars($row["updated_at"]) ?></td>
+                <td><?php echo format_date(htmlspecialchars($row["created_at"]))?></td>
+                <td><?php echo format_date(htmlspecialchars($row["updated_at"]))?></td>
 
                 <td>
                     <?php if ($row["user_id"] != $user_id): ?>

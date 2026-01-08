@@ -66,6 +66,8 @@ if (isset($_POST["action"]))
       <div class="col-md-8">
         <h3 class="pb-4 mb-4 fst-italic border-bottom">Featured posts</h3>
 
+        <?php require_once("./display_content/featured_posts.php");?>
+
         <nav class="blog-pagination" aria-label="Pagination">
           <a class="btn btn-outline-primary rounded-pill" href="#">Older</a>
           <a

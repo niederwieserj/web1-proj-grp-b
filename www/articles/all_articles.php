@@ -2,6 +2,7 @@
 /** @var PDO $pdo */
 session_start();
 require_once("../db_access.php");
+require_once("../display_content/format_date.php");
 
 // --------------------------------------------------
 // Check whether user is logged in
@@ -109,8 +110,8 @@ $articles = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         <?= htmlspecialchars($row["title"]) ?>
                         </a>
                     </td>
-                    <td><?php echo date_format(date_create_from_format("Y-m-d H:i:s", htmlspecialchars($row["created_at"])), "M j, Y H:i");?></td>
-                    <td><?php echo date_format(date_create_from_format("Y-m-d H:i:s", htmlspecialchars($row["updated_at"])), "M j, Y H:i");?></td>
+                    <td><?php echo format_date(htmlspecialchars($row["created_at"]))?></td>
+                    <td><?php echo format_date(htmlspecialchars($row["updated_at"]))?></td>
 
                     <td>
                         <a href="edit_article.php?id=<?= (int)$row['article_id'] ?>&return=all_articles.php" class="btn btn-primary btn-sm">

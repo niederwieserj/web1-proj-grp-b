@@ -96,7 +96,8 @@ $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
                     <div class="mb-3">
                         <label class="form-label">Member since</label>
-                        <input type="text" class="form-control" value="<?= htmlspecialchars($user["created_at"]) ?>" readonly>
+                        
+                        <input type="text" class="form-control" value="<?php echo format_date(htmlspecialchars($user["created_at"]))?>" readonly>
                     </div>
                 </div>
             </div>
