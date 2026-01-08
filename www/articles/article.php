@@ -5,7 +5,7 @@ require_once("../db_access.php");
 
 // --------------------------------------------------
 // $_GET["id"] comes from URL
-$id = (int)($_GET["id"] ?? 0);
+$id = (int) ($_GET["id"] ?? 0);
 
 if ($id <= 0) {
     http_response_code(400);
@@ -70,7 +70,7 @@ $images = $stmt->fetchAll(PDO::FETCH_ASSOC);
 // Permission check for Edit button (admin OR owner)
 
 $currentUserId = $_SESSION["user_id_logged_in"] ?? null;
-$currentRole   = $_SESSION["user_role"] ?? null;
+$currentRole = $_SESSION["user_role"] ?? null;
 
 $isOwner = ($currentUserId && $article["FK_user_id"] == $currentUserId);
 $isAdmin = ($currentRole === "admin");
@@ -79,6 +79,7 @@ $isAdmin = ($currentRole === "admin");
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <!-- write title in Browser top -->
     <?php readfile("../assets/head.html"); ?>
@@ -86,76 +87,115 @@ $isAdmin = ($currentRole === "admin");
 </head>
 
 <body>
-<?php require_once("../assets/navbar.php"); ?>
+    <?php require_once("../assets/navbar.php"); ?>
 
-<main class="container py-5">
+    <main class="container py-5">
+        <!--
+        <?php if (!empty($images)): ?>
+            <?php $img = $images[0] ?>
+                <img src="<?= htmlspecialchars($img['file_path'], ENT_QUOTES, 'UTF-8') ?>" class="d-block w-100" alt="<?= htmlspecialchars($img['alt_text'] ?? '', ENT_QUOTES, 'UTF-8') ?>">
+        <?php endif; ?>
+        -->
 
-    <!-- edit article button -->
-    <?php if ($isAdmin || $isOwner): ?>
-        <!-- -------------------------------------------------- -->
-        <!-- Edit Article Button -->
-        <div class="mb-3">
-            <a
-                    href="edit_article.php?id=<?= (int)$article['article_id'] ?>&return=article.php?id=<?= (int)$article['article_id'] ?>"
-                    class="btn btn-sm btn-outline-primary"
-            >
-                Edit Article
-            </a>
-        </div>
-        <!-- -------------------------------------------------- -->
-    <?php endif; ?>
-
-    <!-- -------------------------------------------------- -->
-    <!-- print title of article -->
-    <h1><?= htmlspecialchars($article['title'], ENT_QUOTES, 'UTF-8') ?></h1>
-    <!-- -------------------------------------------------- -->
-
-    <!-- -------------------------------------------------- -->
-    <!-- grey text -->
-    <p class="text-muted">
-        <!-- print username and datetime -->
-        By <?= htmlspecialchars($article["username"] ?? "Unknown", ENT_QUOTES, 'UTF-8') ?>
-        • <?= htmlspecialchars($article["created_at"], ENT_QUOTES, 'UTF-8') ?>
-    </p>
-    <!-- -------------------------------------------------- -->
-
-    <!-- -------------------------------------------------- -->
-    <?php if ($category): ?>
-        <p>
-            <strong>Category:</strong>
-            <span class="badge bg-secondary">
-            <?= htmlspecialchars($category, ENT_QUOTES, 'UTF-8') ?>
-        </span>
-        </p>
-    <?php endif; ?>
-    <!-- -------------------------------------------------- -->
-
-    <!-- -------------------------------------------------- -->
-    <?php if (!empty($images)): ?>
-        <div class="my-5">
-            <div class="row g-3">
-                <!-- print each picture -->
-                <?php foreach ($images as $img): ?>
-                    <div class="col-12 col-md-6">
-                        <img src="<?= htmlspecialchars($img['file_path'], ENT_QUOTES, 'UTF-8') ?>"
-                             alt="<?= htmlspecialchars($img['alt_text'] ?? '', ENT_QUOTES, 'UTF-8') ?>"
-                             class="img-fluid rounded w-100">
-                    </div>
-                <?php endforeach; ?>
+        <!-- Title of article -->
+        <div class="row">
+            <div class="col-2"></div>
+            <div class="col-8">
+                <h1><?= htmlspecialchars($article['title'], ENT_QUOTES, 'UTF-8') ?></h1>
             </div>
+            <div class="col-2"></div>
         </div>
-    <?php endif; ?>
-    <!-- -------------------------------------------------- -->
 
-    <!-- -------------------------------------------------- -->
-    <!-- print article content -->
-    <div>
-        <?= nl2br(htmlspecialchars($article["content"], ENT_QUOTES, 'UTF-8')) ?>
-    </div>
-    <!-- -------------------------------------------------- -->
+        <!-- Article metadata -->
+        <div class="row">
+            <div class="col-2"></div>
+            <div class="col-8">
+                <div class="d-flex gap-2 justify-content-left py-5">
+                    <!-- User badge -->
+                    <span class="badge d-flex align-items-center p-1 pe-2 text-secondary-emphasis bg-secondary-subtle border border-secondary-subtle rounded-pill">
+                        <svg class="bi me-1" aria-hidden="true" width="24" height="24">
+                            <use xlink:href="./../assets/bootstrap-5.3.8/bootstrap-icons-1.13.1/bootstrap-icons.svg#person-circle">
+                            </use>
+                        </svg>
+                        <?= htmlspecialchars($article["username"] ?? "Unknown", ENT_QUOTES, 'UTF-8') ?>
+                    </span>
 
-</main>
+                    <!-- Category badge -->
+                    <?php if ($category): ?>
+                        <span class="badge d-flex align-items-center p-1 pe-2 text-secondary-emphasis bg-secondary-subtle border border-secondary-subtle rounded-pill">
+                            <svg class="bi mx-1" aria-hidden="true" width="20" height="20">
+                                <use xlink:href="./../assets/bootstrap-5.3.8/bootstrap-icons-1.13.1/bootstrap-icons.svg#tag">
+                                </use>
+                            </svg>
+                            <?= htmlspecialchars($category, ENT_QUOTES, 'UTF-8') ?>
+                        </span>
+                    <?php endif; ?>
 
-<?php readfile("../assets/footer.html"); ?>
+                    <!-- Date badge -->
+                    <span class="badge d-flex align-items-center p-1 pe-2 text-secondary-emphasis bg-secondary-subtle border border-secondary-subtle rounded-pill">
+                        <svg class="bi mx-1" aria-hidden="true" width="20" height="20">
+                            <use xlink:href="./../assets/bootstrap-5.3.8/bootstrap-icons-1.13.1/bootstrap-icons.svg#calendar-event">
+                            </use>
+                        </svg>
+                        <?php echo date_format(date_create_from_format("Y-m-d H:i:s", $article["created_at"]), "M j, Y");?>
+                    </span>
+
+                    <!-- Edit article button -->
+                    <?php if ($isAdmin || $isOwner): ?>
+                        <div>
+                            <a href="edit_article.php?id=<?= (int) $article['article_id'] ?>&return=article.php?id=<?= (int) $article['article_id'] ?>" class="btn btn-sm btn-outline-secondary border-0">
+                                <svg class="bi" aria-hidden="true" width="20" height="20">
+                                    <use xlink:href="./../assets/bootstrap-5.3.8/bootstrap-icons-1.13.1/bootstrap-icons.svg#pencil">
+                                    </use>
+                                </svg>
+                            </a>
+                        </div>
+                    <?php endif; ?>
+                </div>
+            </div>
+            <div class="col-2"></div>
+        </div>
+
+        <div class="row">
+            <div class="col-2"></div>
+            <div class="col-6">
+                <?= nl2br(htmlspecialchars($article["content"], ENT_QUOTES, 'UTF-8')) ?>
+            </div>
+            <div class="col-4"></div>
+        </div>
+
+        <!-- Picture carousel -->
+        <?php if (!empty($images)): ?>
+            <div class="row mt-4">
+                <div class="col-2"></div>
+                <div class="col-8">
+                    <div id="carouselExample" class="carousel slide">
+                        <div class="carousel-inner">
+                            <?php $index = 0; ?>
+                            <?php foreach ($images as $img): ?>
+                                <div class="carousel-item <?php if($index == 0) { echo "active"; } ?>">
+                                    <img src="<?= htmlspecialchars($img['file_path'], ENT_QUOTES, 'UTF-8') ?>" class="d-block w-100" alt="<?= htmlspecialchars($img['alt_text'] ?? '', ENT_QUOTES, 'UTF-8') ?>">
+                                    <?php $index++; ?>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
+                        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Previous</span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Next</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="col-2"></div>
+            </div>
+        <?php endif; ?>
+
+    </main>
+
+    <?php readfile("../assets/footer.html"); ?>
 </body>
+
 </html>

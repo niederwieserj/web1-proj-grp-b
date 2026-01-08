@@ -16,13 +16,8 @@ $is_blogger = ($user_role === "admin" || $user_role === "blogger");
 
             <!-- -------------------------------------------------- -->
             <!-- LEFT -->
-            <!-- Create Article (only Blogger an Admin) -->
             <div class="col-4 d-flex justify-content-start align-items-center">
-                <?php if ($is_blogger): ?>
-                    <a href="/articles/create_article.php" class="btn btn-sm btn-success">
-                        Create Article
-                    </a>
-                <?php endif; ?>
+                
             </div>
             <!-- -------------------------------------------------- -->
 
@@ -50,8 +45,13 @@ $is_blogger = ($user_role === "admin" || $user_role === "blogger");
                 <?php if ($is_logged_in): ?>
 
                     <div class="dropdown">
-                        <button class="btn btn-sm btn-outline-secondary dropdown-toggle"
+                        <button class="btn btn-sm btn-outline-primary dropdown-toggle border-0"
                                 type="button" data-bs-toggle="dropdown">
+                            <svg class="bi" aria-hidden="true" width="16" height="16">
+                                <use
+                                    xlink:href="./../assets/bootstrap-5.3.8/bootstrap-icons-1.13.1/bootstrap-icons.svg#person-circle">
+                                </use>
+                            </svg>
                             <?= htmlspecialchars($_SESSION["user_name_logged_in"] ?? "") ?>
                         </button>
 
@@ -62,6 +62,15 @@ $is_blogger = ($user_role === "admin" || $user_role === "blogger");
                                     Profile
                                 </a>
                             </li>
+
+                            <!-- Create Article (only Blogger an Admin) -->
+                            <?php if ($is_blogger): ?>
+                                <li>
+                                    <a class="dropdown-item" href="/articles/create_article.php">
+                                        Create Article
+                                    </a>
+                                </li>
+                            <?php endif; ?>
 
                             <!-- BLOGGER + ADMIN -->
                             <?php if ($is_blogger): ?>

@@ -87,7 +87,6 @@ $articles = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <th>Title</th>
                 <th>Created</th>
                 <th>Updated</th>
-                <th>View</th>
                 <th>Edit</th>
                 <th>Delete</th>
             </tr>
@@ -106,15 +105,12 @@ $articles = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <?php foreach ($articles as $row): ?>
                 <tr>
                     <td><?= htmlspecialchars($row["username"]) ?></td>
-                    <td><?= htmlspecialchars($row["title"]) ?></td>
-                    <td><?= htmlspecialchars($row["created_at"]) ?></td>
-                    <td><?= htmlspecialchars($row["updated_at"]) ?></td>
-
-                    <td>
-                        <a href="article.php?id=<?= (int)$row['article_id'] ?>" class="btn btn-primary btn-sm" target="_blank">
-                            View
+                    <td><a href="article.php?id=<?= (int)$row['article_id'] ?>"  target="_blank">
+                        <?= htmlspecialchars($row["title"]) ?>
                         </a>
                     </td>
+                    <td><?php echo date_format(date_create_from_format("Y-m-d H:i:s", htmlspecialchars($row["created_at"])), "M j, Y H:i");?></td>
+                    <td><?php echo date_format(date_create_from_format("Y-m-d H:i:s", htmlspecialchars($row["updated_at"])), "M j, Y H:i");?></td>
 
                     <td>
                         <a href="edit_article.php?id=<?= (int)$row['article_id'] ?>&return=all_articles.php" class="btn btn-primary btn-sm">

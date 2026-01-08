@@ -96,7 +96,7 @@ $images = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         <!-- title -->
         <div class="mb-3">
-            <label for="title" class="form-label">Title</label>
+            <h3><label for="title" class="form-label">Title</label></h3>
             <input
                     type="text"
                     id="title"
@@ -109,18 +109,18 @@ $images = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         <!-- content -->
         <div class="mb-3">
-            <label for="content" class="form-label">Content</label>
+            <h3><label for="content" class="form-label">Content</label></h3>
             <textarea
                     id="content"
                     name="content"
                     class="form-control"
-                    rows="3"
+                    rows="15"
                     required><?= htmlspecialchars($article['content']) ?></textarea>
         </div>
 
         <!-- categories -->
         <div class="mb-3">
-            <label for="category_id" class="form-label">Category</label>
+            <h3><label for="category_id" class="form-label">Category</label></h3>
             <select name="category_id" id="category_id" class="form-select" required>
                 <?php foreach ($categories as $cat): ?>
                     <option
