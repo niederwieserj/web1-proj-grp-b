@@ -58,10 +58,10 @@ $articles = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <title>My Articles</title>
 </head>
 
-<body>
+<body style="min-height: 100vh; display: flex; flex-direction: column;">
 <?php require_once("../assets/navbar.php"); ?>
 
-<main class="container py-5">
+<main class="container py-5" style="flex: 1;">
 
     <h1>All Articles</h1>
 
@@ -81,7 +81,7 @@ $articles = $stmt->fetchAll(PDO::FETCH_ASSOC);
         <p class="text-muted">No articles have been written yet.</p>
     <?php else: ?>
 
-        <table class="table align-middle">
+        <table class="table table-hover align-middle">
             <thead>
             <tr>
                 <th>Username</th>
@@ -114,8 +114,11 @@ $articles = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     <td><?php echo format_date(htmlspecialchars($row["updated_at"]))?></td>
 
                     <td>
-                        <a href="edit_article.php?id=<?= (int)$row['article_id'] ?>&return=all_articles.php" class="btn btn-primary btn-sm">
-                            Edit
+                        <a href="edit_article.php?id=<?= (int)$row['article_id'] ?>&return=all_articles.php" class="btn btn-outline-primary btn-sm">
+                            <svg class="bi mx-1" aria-hidden="true" width="16" height="16">
+                                <use xlink:href="./../assets/bootstrap-5.3.8/bootstrap-icons-1.13.1/bootstrap-icons.svg#pencil">
+                                </use>
+                            </svg>
                         </a>
                     </td>
 
@@ -124,7 +127,12 @@ $articles = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             <!-- send value article_id via POST to delete_article -->
                             <input type="hidden" name="target_article_id" value="<?= (int)$row["article_id"] ?>">
                             <input type="hidden" name="redirect_to" value="all_articles.php">
-                            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                            <button type="submit" class="btn btn-outline-danger btn-sm">
+                                <svg class="bi mx-1" aria-hidden="true" width="16" height="16">
+                                    <use xlink:href="./../assets/bootstrap-5.3.8/bootstrap-icons-1.13.1/bootstrap-icons.svg#trash">
+                                    </use>
+                                </svg>
+                            </button>
                         </form>
                     </td>
 

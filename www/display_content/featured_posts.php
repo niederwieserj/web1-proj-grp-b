@@ -15,7 +15,7 @@ if ($id <= 0) {
 
 // --------------------------------------------------
 // Load Article (title, author, timestamp) from article_id
-$sql = "SELECT articles.*, users.username
+$sql = "SELECT articles.*, users.username, users.user_id
         FROM articles
         LEFT JOIN users ON users.user_id = articles.FK_user_id
         WHERE articles.article_id = ?
@@ -95,7 +95,9 @@ $isAdmin = ($currentRole === "admin");
             <use xlink:href="./../assets/bootstrap-5.3.8/bootstrap-icons-1.13.1/bootstrap-icons.svg#person-circle">
             </use>
           </svg>
-          <?= htmlspecialchars($article["username"] ?? "Unknown", ENT_QUOTES, 'UTF-8') ?>
+          <a href="/users/user_profile.php?id=<?= htmlspecialchars($article['user_id'], ENT_QUOTES, 'UTF-8') ?>" class="text-reset text-decoration-none">
+            <?= htmlspecialchars($article["username"] ?? "Unknown", ENT_QUOTES, 'UTF-8') ?>
+          </a>
         </span>
 
         <!-- Category badge -->
@@ -168,5 +170,5 @@ $isAdmin = ($currentRole === "admin");
     </div>
   </div>
 
-  
+
 </main>

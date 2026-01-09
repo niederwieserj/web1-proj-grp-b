@@ -2,6 +2,7 @@
 /** @var PDO $pdo */
 session_start();
 require_once("../db_access.php");
+require_once("../display_content/format_date.php");
 
 // --------------------------------------------------
 // Check whether user is logged in
@@ -49,10 +50,10 @@ $articles = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <title>My Articles</title>
 </head>
 
-<body>
+<body style="min-height: 100vh; display: flex; flex-direction: column;">
 <?php require_once("../assets/navbar.php"); ?>
 
-<main class="container py-5">
+<main class="container py-5" style="flex: 1;">
 
     <h1>My Articles</h1>
 
@@ -72,18 +73,17 @@ $articles = $stmt->fetchAll(PDO::FETCH_ASSOC);
         <p class="text-muted">You have not written any articles yet.</p>
     <?php else: ?>
 
-        <table class="table align-middle">
+        <table class="table table-hover align-middle">
             <thead>
-                <tr>
-                    <th>Title</th>
-                    <th>Created</th>
-                    <th>Updated</th>
-                    <th>View</th>
-                    <th>Edit</th>
-                    <th>Delete</th>
-                </tr>
+            <tr>
+                <th>Title</th>
+                <th>Created</th>
+                <th>Updated</th>
+                <th>Edit</th>
+                <th>Delete</th>
+            </tr>
 
-                <!-- OR
+            <!-- OR
                 <tr>
                     <?php foreach (array_keys($articles[0]) as $column): ?>
                         <th><?= htmlspecialchars($column) ?></th>
@@ -94,35 +94,40 @@ $articles = $stmt->fetchAll(PDO::FETCH_ASSOC);
             </thead>
 
             <tbody>
-                <?php foreach ($articles as $row): ?>
-                    <tr>
-                        <td><?= htmlspecialchars($row["title"]) ?></td>
-                        <td><?= htmlspecialchars($row["created_at"]) ?></td>
-                        <td><?= htmlspecialchars($row["updated_at"]) ?></td>
+            <?php foreach ($articles as $row): ?>
+                <tr>
+                    <td><a href="article.php?id=<?= (int)$row['article_id'] ?>"  target="_blank">
+                        <?= htmlspecialchars($row["title"]) ?>
+                        </a>
+                    </td>
+                    <td><?php echo format_date(htmlspecialchars($row["created_at"]))?></td>
+                    <td><?php echo format_date(htmlspecialchars($row["updated_at"]))?></td>
 
-                        <td>
-                            <a href="article.php?id=<?= (int)$row['article_id'] ?>" class="btn btn-primary btn-sm" target="_blank">
-                                View
-                            </a>
-                        </td>
+                    <td>
+                        <a href="edit_article.php?id=<?= (int)$row['article_id'] ?>&return=all_articles.php" class="btn btn-outline-primary btn-sm">
+                            <svg class="bi mx-1" aria-hidden="true" width="16" height="16">
+                                <use xlink:href="./../assets/bootstrap-5.3.8/bootstrap-icons-1.13.1/bootstrap-icons.svg#pencil">
+                                </use>
+                            </svg>
+                        </a>
+                    </td>
 
-                        <td>
-                            <a href="edit_article.php?id=<?= (int)$row['article_id'] ?>&return=my_articles.php" class="btn btn-primary btn-sm">
-                                Edit
-                            </a>
-                        </td>
+                    <td>
+                        <form method="post" action="delete_article.php" onsubmit="return confirm('Delete Article?');">
+                            <!-- send value article_id via POST to delete_article -->
+                            <input type="hidden" name="target_article_id" value="<?= (int)$row["article_id"] ?>">
+                            <input type="hidden" name="redirect_to" value="all_articles.php">
+                            <button type="submit" class="btn btn-outline-danger btn-sm">
+                                <svg class="bi mx-1" aria-hidden="true" width="16" height="16">
+                                    <use xlink:href="./../assets/bootstrap-5.3.8/bootstrap-icons-1.13.1/bootstrap-icons.svg#trash">
+                                    </use>
+                                </svg>
+                            </button>
+                        </form>
+                    </td>
 
-                        <td>
-                             <form method="post" action="delete_article.php" onsubmit="return confirm('Delete Article?');">
-                                <!-- send value article_id via POST to delete_article -->
-                                <input type="hidden" name="target_article_id" value="<?= (int)$row["article_id"] ?>">
-                                <input type="hidden" name="redirect_to" value="my_articles.php">
-                                <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-                            </form>
-                        </td>
-
-                    </tr>
-                <?php endforeach; ?>
+                </tr>
+            <?php endforeach; ?>
             </tbody>
         </table>
 

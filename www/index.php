@@ -67,13 +67,6 @@ if (isset($_POST["action"]))
         <h3 class="pb-4 mb-4 fst-italic border-bottom">Featured posts</h3>
 
         <?php require_once("./display_content/featured_posts.php");?>
-
-        <nav class="blog-pagination" aria-label="Pagination">
-          <a class="btn btn-outline-primary rounded-pill" href="#">Older</a>
-          <a
-            class="btn btn-outline-secondary rounded-pill disabled"
-            aria-disabled="true">Newer</a>
-        </nav>
       </div>
       <div class="col-md-4">
         <div class="position-sticky" style="top: 2rem">

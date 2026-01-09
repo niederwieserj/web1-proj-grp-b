@@ -2,6 +2,7 @@
 /** @var PDO $pdo */
 session_start();
 require_once("../../db_access.php");
+require_once("../../display_content/format_date.php");
 
 // --------------------------------------------------
 // Check whether user is logged in
@@ -47,10 +48,10 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <title>Users</title>
 </head>
 
-<body>
+<body style="min-height: 100vh; display: flex; flex-direction: column;">
 <?php require_once("../../assets/navbar.php"); ?>
 
-<main class="container py-5">
+<main class="container py-5" style="flex: 1;">
 
     <h1>Users</h1>
 
@@ -66,7 +67,7 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
         ]
     -->
 
-    <table class="table align-middle">
+    <table class="table table-hover align-middle">
         <thead>
 
         <!--
@@ -89,7 +90,12 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
         <tbody>
         <?php foreach ($users as $row): ?>
             <tr>
-                <td><?= htmlspecialchars($row["username"]) ?></td>
+                <td>
+                    <a href="/users/user_profile.php?id=<?= htmlspecialchars($row['user_id'], ENT_QUOTES, 'UTF-8') ?>">
+                        <?= htmlspecialchars($row["username"]) ?>
+                        </a>
+                    
+                </td>
                 <td><?= htmlspecialchars($row["email"]) ?></td>
                 <td><?php echo format_date(htmlspecialchars($row["created_at"]))?></td>
                 <td><?php echo format_date(htmlspecialchars($row["updated_at"]))?></td>
@@ -100,7 +106,7 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
                             <!-- send value user_id via POST to delete_user -->
                             <input type="hidden" name="target_user_id" value="<?= (int)$row["user_id"] ?>">
-                            <button type="submit" class="btn btn-danger btn-sm">
+                            <button type="submit" class="btn btn-outline-danger btn-sm">
                                 Deactivate
                             </button>
                         </form>

@@ -2,13 +2,16 @@
 /** @var PDO $pdo */
 session_start();
 require_once("../db_access.php");
+require_once("../display_content/format_date.php");
+
+// $_GET["id"] comes from URL
+$user_id = (int) ($_GET["id"] ?? 0);
 
 // --------------------------------------------------
-// Check whether user is logged in
-$user_id = $_SESSION["user_id_logged_in"] ?? null;
+// Check whether user ID is given
 if (!$user_id) {
     http_response_code(401);
-    die("Not logged in.");
+    die("User not found.");
 }
 // --------------------------------------------------
 
@@ -51,28 +54,26 @@ $user = $stmt->fetch(PDO::FETCH_ASSOC);
     <title>My Articles</title>
 </head>
 
-<body>
+<body style="min-height: 100vh; display: flex; flex-direction: column;">
 <?php require_once("../assets/navbar.php"); ?>
 
-<main class="container py-5">
+<main class="container py-5" style="flex: 1;">
 
     <div class="row g-4">
+        <?php if(!empty($user["username"])) { ?>
+
         <!-- Profilbild -->
         <div class="col-md-4 text-center">
-            <img
-                src="<?= $user["file_path"]
-                    ? htmlspecialchars($user["file_path"])
-                    : '/assets/img/default-avatar.png' ?>"
-                class="img-fluid rounded-circle mb-3"
-                alt="<?= htmlspecialchars($user["alt_text"] ?? 'Profile image') ?>"
-                style="max-width: 200px;"
-            >
+            <svg class="bi mx-1 mb-4" aria-hidden="true" width="64" height="64">
+                <use xlink:href="./../assets/bootstrap-5.3.8/bootstrap-icons-1.13.1/bootstrap-icons.svg#person-circle">
+                </use>
+            </svg>
 
             <form method="post" action="save_profile_picture.php" enctype="multipart/form-data">
                 <div class="mb-2">
                     <input type="file" name="profile_image" class="form-control" accept="image/*" required>
                 </div>
-                <button type="submit" class="btn btn-outline-primary btn-sm">
+                <button type="submit" class="btn btn-outline-primary btn-sm mt-2">
                     Upload new image
                 </button>
             </form>
@@ -102,6 +103,10 @@ $user = $stmt->fetch(PDO::FETCH_ASSOC);
                 </div>
             </div>
         </div>
+        <?php } else {
+            echo "User not found.";
+        }
+        ?>
     </div>
 
 </main>
