@@ -48,6 +48,7 @@ $user = $stmt->fetch(PDO::FETCH_ASSOC);
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <!-- write title in Browser top -->
     <?php readfile("../assets/head.html"); ?>
@@ -55,62 +56,75 @@ $user = $stmt->fetch(PDO::FETCH_ASSOC);
 </head>
 
 <body style="min-height: 100vh; display: flex; flex-direction: column;">
-<?php require_once("../assets/navbar.php"); ?>
+    <?php require_once("../assets/navbar.php"); ?>
 
-<main class="container py-5" style="flex: 1;">
+    <main class="container py-5" style="flex: 1;">
 
-    <div class="row g-4">
-        <?php if(!empty($user["username"])) { ?>
+        <div class="row g-4">
+            <?php if (!empty($user["username"])) { ?>
 
-        <!-- Profilbild -->
-        <div class="col-md-4 text-center">
-            <svg class="bi mx-1 mb-4" aria-hidden="true" width="64" height="64">
-                <use xlink:href="./../assets/bootstrap-5.3.8/bootstrap-icons-1.13.1/bootstrap-icons.svg#person-circle">
-                </use>
-            </svg>
+                <!-- Profilbild -->
+                <div class="col-md-4 text-center">
+                    <svg class="bi mx-1 mb-4" aria-hidden="true" width="64" height="64">
+                        <use xlink:href="./../assets/bootstrap-5.3.8/bootstrap-icons-1.13.1/bootstrap-icons.svg#person-circle">
+                        </use>
+                    </svg>
 
-            <form method="post" action="save_profile_picture.php" enctype="multipart/form-data">
-                <div class="mb-2">
-                    <input type="file" name="profile_image" class="form-control" accept="image/*" required>
+                    <form method="post" action="save_profile_picture.php" enctype="multipart/form-data">
+                        <div class="mb-2">
+                            <input type="file" name="profile_image" class="form-control" accept="image/*" required>
+                        </div>
+                        <button type="submit" class="btn btn-outline-primary btn-sm mt-2">
+                            Upload new image
+                        </button>
+                    </form>
                 </div>
-                <button type="submit" class="btn btn-outline-primary btn-sm mt-2">
-                    Upload new image
-                </button>
-            </form>
+
+                <!-- Userdaten -->
+                <div class="col-md-8">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Profile Information</h5>
+
+                            <div class="mb-3">
+                                <label class="form-label">Username</label>
+                                <input type="text" class="form-control" value="<?= htmlspecialchars($user["username"]) ?>" disabled>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Email</label>
+                                <input type="email" class="form-control" value="<?= htmlspecialchars($user["email"]) ?>" disabled>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Member since</label>
+
+                                <input type="text" class="form-control" value="<?php echo format_date(htmlspecialchars($user["created_at"])) ?>" disabled>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <?php if ($user_id === $_SESSION["user_id_logged_in"] || $user_role === "admin") { ?>
+                    <div class="container">
+                        <a href="edit_user.php?id=<?= (int) $user_id ?>" class="btn btn-outline-primary float-end mt-3">
+                            <svg class="bi" aria-hidden="true" width="20" height="20">
+                                <use xlink:href="./../assets/bootstrap-5.3.8/bootstrap-icons-1.13.1/bootstrap-icons.svg#pencil">
+                                </use>
+                            </svg>
+                        </a>
+                    </div>
+                <?php } ?>
+
+
+            <?php } else {
+                echo "User not found.";
+            }
+            ?>
         </div>
 
-        <!-- Userdaten -->
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">Profile Information</h5>
+    </main>
 
-                    <div class="mb-3">
-                        <label class="form-label">Username</label>
-                        <input type="text" class="form-control" value="<?= htmlspecialchars($user["username"]) ?>" readonly>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Email</label>
-                        <input type="email" class="form-control" value="<?= htmlspecialchars($user["email"]) ?>" readonly>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Member since</label>
-                        
-                        <input type="text" class="form-control" value="<?php echo format_date(htmlspecialchars($user["created_at"]))?>" readonly>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <?php } else {
-            echo "User not found.";
-        }
-        ?>
-    </div>
-
-</main>
-
-<?php readfile("../assets/footer.html"); ?>
+    <?php readfile("../assets/footer.html"); ?>
 </body>
+
 </html>

@@ -49,7 +49,7 @@ $is_blogger = ($user_role === "admin" || $user_role === "blogger");
                                 type="button" data-bs-toggle="dropdown">
                             <svg class="bi" aria-hidden="true" width="16" height="16">
                                 <use
-                                    xlink:href="./../assets/bootstrap-5.3.8/bootstrap-icons-1.13.1/bootstrap-icons.svg#person-circle">
+                                    xlink:href="/assets/bootstrap-5.3.8/bootstrap-icons-1.13.1/bootstrap-icons.svg#person-circle">
                                 </use>
                             </svg>
                             <?= htmlspecialchars($_SESSION["user_name_logged_in"] ?? "") ?>
@@ -58,7 +58,7 @@ $is_blogger = ($user_role === "admin" || $user_role === "blogger");
                         <ul class="dropdown-menu dropdown-menu-end">
 
                             <li>
-                                <a class="dropdown-item" href="/users/user_profile.php">
+                                <a class="dropdown-item" href="/users/user_profile.php?id=<?php echo $_SESSION["user_id_logged_in"]; ?>">
                                     Profile
                                 </a>
                             </li>
