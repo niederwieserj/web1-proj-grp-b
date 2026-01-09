@@ -34,10 +34,10 @@ if ($user_role !== "admin") {
     <title>Admin Panel</title>
 </head>
 
-<body>
+<body style="min-height: 100vh; display: flex; flex-direction: column;">
 <?php require_once("../assets/navbar.php"); ?>
 
-<main class="container py-5">
+<main class="container py-5" style="flex: 1;">
     <h1>Admin Panel</h1>
 
     <div class="list-group">

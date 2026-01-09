@@ -7,6 +7,12 @@ function login(string $user_email, string $user_pw): void
 
     require_once("db_access.php");
 
+    $db_host = "database";
+    $db_user = "root";
+    $db_password = "tiger";
+    $db_database = "blog";
+    $db_port = 3306;
+
     // --------------------------------------------------
     // Check input
     if ($user_email === "" || $user_pw === "") {

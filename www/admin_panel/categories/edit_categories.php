@@ -49,10 +49,11 @@ if (!$category) {
     <title>Edit Category</title>
 </head>
 
-<body>
+<body style="min-height: 100vh; display: flex; flex-direction: column;">
 <?php require_once("../../assets/navbar.php"); ?>
 
-<main class="container py-5">
+
+<main class="container py-5" style="flex: 1;">
 
     <h1 class="mb-4">Edit Category</h1>
 
