@@ -90,7 +90,7 @@ $isAdmin = ($currentRole === "admin");
     <div class="col">
       <div class="d-flex gap-2 justify-content-left py-5">
         <!-- User badge -->
-        <span class="badge d-flex align-items-center p-1 pe-2 text-secondary-emphasis bg-secondary-subtle border border-secondary-subtle rounded-pill">
+        <span class="badge d-flex align-items-center p-1 pe-2 text-success-emphasis bg-success-subtle border border-success-subtle rounded-pill">
           <svg class="bi me-1" aria-hidden="true" width="24" height="24">
             <use xlink:href="./../assets/bootstrap-5.3.8/bootstrap-icons-1.13.1/bootstrap-icons.svg#person-circle">
             </use>
@@ -102,17 +102,19 @@ $isAdmin = ($currentRole === "admin");
 
         <!-- Category badge -->
         <?php if ($category): ?>
-          <span class="badge d-flex align-items-center p-1 pe-2 text-secondary-emphasis bg-secondary-subtle border border-secondary-subtle rounded-pill">
+          <span class="badge d-flex align-items-center p-1 pe-2 text-success-emphasis bg-success-subtle border border-success-subtle rounded-pill">
             <svg class="bi mx-1" aria-hidden="true" width="20" height="20">
               <use xlink:href="./../assets/bootstrap-5.3.8/bootstrap-icons-1.13.1/bootstrap-icons.svg#tag">
               </use>
             </svg>
-            <?= htmlspecialchars($category, ENT_QUOTES, 'UTF-8') ?>
+            <a href="/categories.php?category=<?= htmlspecialchars($article['FK_category_id'], ENT_QUOTES, 'UTF-8') ?>" class="text-reset text-decoration-none">
+                <?= htmlspecialchars($category, ENT_QUOTES, 'UTF-8') ?>
+            </a>
           </span>
         <?php endif; ?>
 
         <!-- Date badge -->
-        <span class="badge d-flex align-items-center p-1 pe-2 text-secondary-emphasis bg-secondary-subtle border border-secondary-subtle rounded-pill">
+        <span class="badge d-flex align-items-center p-1 pe-2 text-success-emphasis bg-success-subtle border border-success-subtle rounded-pill">
           <svg class="bi mx-1" aria-hidden="true" width="20" height="20">
             <use xlink:href="./../assets/bootstrap-5.3.8/bootstrap-icons-1.13.1/bootstrap-icons.svg#calendar-event">
             </use>
