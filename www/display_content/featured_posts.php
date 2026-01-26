@@ -123,7 +123,7 @@ $isAdmin = ($currentRole === "admin");
         <!-- Edit article button -->
         <?php if ($isAdmin || $isOwner): ?>
           <div>
-            <a href="edit_article.php?id=<?= (int) $article['article_id'] ?>&return=article.php?id=<?= (int) $article['article_id'] ?>" class="btn btn-sm btn-outline-secondary border-0">
+            <a href="/articles/edit_article.php?id=<?= (int) $article['article_id'] ?>&return=article.php?id=<?= (int) $article['article_id'] ?>" class="btn btn-sm btn-outline-secondary border-0">
               <svg class="bi" aria-hidden="true" width="20" height="20">
                 <use xlink:href="./../assets/bootstrap-5.3.8/bootstrap-icons-1.13.1/bootstrap-icons.svg#pencil">
                 </use>

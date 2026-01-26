@@ -1,6 +1,8 @@
 <?php
 /** @var PDO $pdo */
 session_start();
+$_SESSION["current_page"] = "";
+
 require_once("../db_access.php");
 
 // --------------------------------------------------

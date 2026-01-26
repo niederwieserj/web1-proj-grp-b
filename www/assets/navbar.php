@@ -129,12 +129,12 @@ $is_blogger = ($user_role === "admin" || $user_role === "blogger");
     <!-- NAV CATEGORIES -->
     <div class="nav-scroller py-1 mb-3 border-bottom">
         <nav class="nav nav-underline justify-content-between">
-            <a class="nav-item nav-link link-body-emphasis active" href="/index.php">Home</a>
-            <a class="nav-item nav-link link-body-emphasis" href="#">Lifestyle</a>
-            <a class="nav-item nav-link link-body-emphasis" href="#">Travel</a>
-            <a class="nav-item nav-link link-body-emphasis" href="#">Food</a>
-            <a class="nav-item nav-link link-body-emphasis" href="#">Technology</a>
-            <a class="nav-item nav-link link-body-emphasis" href="#">Health</a>
+            <a class="nav-item nav-link link-body-emphasis <?php if($_SESSION["current_page"] == "Home") { echo "active "; } ?>" href="/index.php">Home</a>
+            <a class="nav-item nav-link link-body-emphasis <?php if($_SESSION["current_page"] == "Lifestyle") { echo "active "; } ?>" href="/categories.php?category=2">Lifestyle</a>
+            <a class="nav-item nav-link link-body-emphasis <?php if($_SESSION["current_page"] == "Travel") { echo "active "; } ?>" href="/categories.php?category=3">Travel</a>
+            <a class="nav-item nav-link link-body-emphasis <?php if($_SESSION["current_page"] == "Food") { echo "active "; } ?>" href="/categories.php?category=5">Food</a>
+            <a class="nav-item nav-link link-body-emphasis <?php if($_SESSION["current_page"] == "Technology") { echo "active "; } ?>" href="/categories.php?category=1">Technology</a>
+            <a class="nav-item nav-link link-body-emphasis <?php if($_SESSION["current_page"] == "Health") { echo "active "; } ?>" href="/categories.php?category=4">Health</a>
         </nav>
     </div>
 </div>

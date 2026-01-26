@@ -1,6 +1,8 @@
 <?php
 /** @var PDO $pdo */
 session_start();
+$_SESSION["current_page"] = "";
+
 require_once("../db_access.php");
 require_once("../display_content/format_date.php");
 
@@ -28,17 +30,12 @@ if ($user_role !== "admin") {
 // --------------------------------------------------
 // Load All Articles (title, timestamp)
 
-
-$sql = "SELECT article_id, title, created_at, updated_at
-        FROM articles
-        WHERE is_active = 1;
-        ";
-
-$sql = "SELECT users.username, articles.article_id, articles.title, articles.created_at, articles.updated_at
+$sql = "SELECT users.user_id, users.username, articles.article_id, articles.title, articles.created_at, articles.updated_at
         FROM articles
         JOIN users
             ON articles.FK_user_id = users.user_id
-        WHERE articles.is_active = 1;
+        WHERE articles.is_active = 1
+        ORDER BY articles.created_at DESC;
         ";
 
 // prepare SQL
@@ -55,7 +52,7 @@ $articles = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <head>
     <!-- write title in Browser top -->
     <?php readfile("../assets/head.html"); ?>
-    <title>My Articles</title>
+    <title>Articles</title>
 </head>
 
 <body style="min-height: 100vh; display: flex; flex-direction: column;">
@@ -105,7 +102,11 @@ $articles = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <tbody>
             <?php foreach ($articles as $row): ?>
                 <tr>
-                    <td><?= htmlspecialchars($row["username"]) ?></td>
+                    <td>
+                        <a href="/users/user_profile.php?id=<?= htmlspecialchars($row['user_id'], ENT_QUOTES, 'UTF-8') ?>">
+                            <?= htmlspecialchars($row["username"]) ?>
+                        </a>
+                    </td>
                     <td><a href="article.php?id=<?= (int)$row['article_id'] ?>"  target="_blank">
                         <?= htmlspecialchars($row["title"]) ?>
                         </a>

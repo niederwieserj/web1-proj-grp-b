@@ -1,6 +1,8 @@
 <?php
 /** @var PDO $pdo */
 session_start();
+$_SESSION["current_page"] = "";
+
 require_once("../db_access.php");
 require_once("../display_content/format_date.php");
 
@@ -31,6 +33,7 @@ $sql = "SELECT article_id, title, created_at, updated_at
         FROM articles
         WHERE FK_user_id = ?
         AND is_active = 1
+        ORDER BY created_at DESC;
 ";
 
 // prepare SQL
