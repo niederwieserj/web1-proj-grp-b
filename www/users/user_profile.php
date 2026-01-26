@@ -49,7 +49,7 @@ $stmt->execute([$user_id]);
 $article_count = $stmt->fetch(PDO::FETCH_ASSOC)["count"];
 
 $articles_per_page = 3;
-$total_pages = $article_count / $articles_per_page;
+$total_pages = ceil($article_count / $articles_per_page);
 
 if ($total_pages < 1) {
     $total_pages = 1;
@@ -143,7 +143,7 @@ $articles = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <div class="row mt-4">
                     <div class="col-2"></div>
                     <div class="col-8">
-                        <h1 class="mb-4"><?= htmlspecialchars($user["username"]) ?>'s blog posts</h1>
+                        <h2 class="mb-4"><?= htmlspecialchars($user["username"]) ?>'s blog posts</h2>
                         <?php foreach ($articles as $article) { ?>
                             <a class="d-flex flex-column flex-lg-row gap-3 align-items-start align-items-lg-center py-3 link-body-emphasis text-decoration-none border-top position-relative" href="/articles/article.php?id=<?php echo $article["article_id"]; ?>">
                                 <?php if (!empty($article["file_path"])) { ?>
@@ -178,7 +178,7 @@ $articles = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                 </a>
                             </li>
                             <?php for ($i = 0; $i < $total_pages; $i++) { ?>
-                                <li class="page-item"><a class="page-link" href="<?php echo $_SERVER['PHP_SELF']."?id=".$user_id."&page=".($i+1); ?>"><?php echo $i+1; ?></a></li>
+                                <li class="page-item <?php if($i+1 == $pagination_nr) { echo "active"; } ?>"><a class="page-link" href="<?php echo $_SERVER['PHP_SELF']."?id=".$user_id."&page=".($i+1); ?>"><?php echo $i+1; ?></a></li>
                             <?php } ?>
                             
                             <li class="page-item">

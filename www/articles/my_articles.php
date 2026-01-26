@@ -56,9 +56,9 @@ $articles = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <body style="min-height: 100vh; display: flex; flex-direction: column;">
 <?php require_once("../assets/navbar.php"); ?>
 
-<main class="container py-5" style="flex: 1;">
+<main class="container" style="flex: 1;">
 
-    <h1>My Articles</h1>
+    <h1 class="mt-4 mb-4">My Articles</h1>
 
 
     <!-- STRUCTURE

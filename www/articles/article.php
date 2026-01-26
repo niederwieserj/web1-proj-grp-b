@@ -51,6 +51,8 @@ $stmt = $pdo->prepare($sql);
 $stmt->execute([$article["article_id"]]);
 // get result; fetch returns a single line
 $category = $stmt->fetchColumn();
+
+$_SESSION["current_page"] = $category;
 // --------------------------------------------------
 
 // --------------------------------------------------
@@ -130,7 +132,9 @@ $isAdmin = ($currentRole === "admin");
                                 <use xlink:href="./../assets/bootstrap-5.3.8/bootstrap-icons-1.13.1/bootstrap-icons.svg#tag">
                                 </use>
                             </svg>
-                            <?= htmlspecialchars($category, ENT_QUOTES, 'UTF-8') ?>
+                            <a href="/categories.php?category=<?= htmlspecialchars($article['FK_category_id'], ENT_QUOTES, 'UTF-8') ?>" class="text-reset text-decoration-none">
+                                <?= htmlspecialchars($category, ENT_QUOTES, 'UTF-8') ?>
+                            </a>
                         </span>
                     <?php endif; ?>
 

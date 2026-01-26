@@ -94,7 +94,7 @@ $_SESSION["current_page"] = $category["name"];
       </div>
       <div class="col-4">
         <div class="position-sticky" style="top: 2rem">
-          <div class="p-4 mt-3 mb-3 border border-black rounded">
+          <div class="p-4 mt-3 mb-3 border border-secondary rounded">
             <h4 class="fst-italic">About</h4>
             <p class="mb-0">
               <?php echo $category["description"]; ?>
