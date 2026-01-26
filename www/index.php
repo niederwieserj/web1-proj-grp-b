@@ -27,6 +27,8 @@ if (isset($_POST["action"]))
       break;
   }
 }
+
+$_SESSION["current_page"] = "Home";
 ?>
 
 <!DOCTYPE html>

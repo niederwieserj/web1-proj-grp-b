@@ -1,6 +1,8 @@
 <?php
 /** @var PDO $pdo */
 session_start();
+$_SESSION["current_page"] = "";
+
 require_once("../db_access.php");
 require_once("../display_content/format_date.php");
 
@@ -31,6 +33,7 @@ $sql = "SELECT article_id, title, created_at, updated_at
         FROM articles
         WHERE FK_user_id = ?
         AND is_active = 1
+        ORDER BY created_at DESC;
 ";
 
 // prepare SQL
@@ -53,9 +56,9 @@ $articles = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <body style="min-height: 100vh; display: flex; flex-direction: column;">
 <?php require_once("../assets/navbar.php"); ?>
 
-<main class="container py-5" style="flex: 1;">
+<main class="container" style="flex: 1;">
 
-    <h1>My Articles</h1>
+    <h1 class="mt-4 mb-4">My Articles</h1>
 
 
     <!-- STRUCTURE

@@ -36,9 +36,9 @@ if (!in_array($user_role, ["admin", "blogger"], true)) {
 <body>
 <?php require_once("../assets/navbar.php"); ?>
 
-<main class="container py-5">
+<main class="container">
 
-    <h1>Create new article</h1>
+    <h1 class="mt-4 mb-4">Create new article</h1>
 
     <!-- after sending form action = save_articles.php -->
     <form action="save_article.php" method="POST" enctype="multipart/form-data">

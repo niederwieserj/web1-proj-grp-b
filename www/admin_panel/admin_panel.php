@@ -1,6 +1,8 @@
 <?php
 /** @var PDO $pdo */
 session_start();
+$_SESSION["current_page"] = "";
+
 require_once("../db_access.php");
 
 // --------------------------------------------------
@@ -37,8 +39,8 @@ if ($user_role !== "admin") {
 <body style="min-height: 100vh; display: flex; flex-direction: column;">
 <?php require_once("../assets/navbar.php"); ?>
 
-<main class="container py-5" style="flex: 1;">
-    <h1>Admin Panel</h1>
+<main class="container" style="flex: 1;">
+    <h1 class="mt-4 mb-4">Admin Panel</h1>
 
     <div class="list-group">
         <a href="users/users.php" class="list-group-item list-group-item-action">

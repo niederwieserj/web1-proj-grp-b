@@ -8,7 +8,7 @@
     a.created_at,
     ai.file_path
     FROM articles AS a
-    JOIN article_images AS ai
+    LEFT JOIN article_images AS ai
     ON ai.FK_article_id = a.article_id
     AND ai.image_id = (
         SELECT MIN(image_id)
@@ -30,7 +30,12 @@
         <li>
             <a class="d-flex flex-column flex-lg-row gap-3 align-items-start align-items-lg-center py-3 link-body-emphasis text-decoration-none border-top"
             href="/articles/article.php?id=<?php echo $art_id; ?>">
+            <?php if(!empty($art_img)) { ?>
             <img src="./articles/<?php echo $art_img ?>" width="120" height="100" style="object-fit: cover;" class="rounded">
+            <?php } else { ?>
+            <div class="card border border-primary-subtle border-3" style="width: 120px; height: 100px;">
+            </div>
+            <?php } ?>
             <div class="col-lg-8">
                 <h6 class="mb-0">
             <?php echo $art_title; ?>

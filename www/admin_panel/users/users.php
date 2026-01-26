@@ -1,4 +1,6 @@
 <?php
+$_SESSION["current_page"] = "";
+
 /** @var PDO $pdo */
 session_start();
 require_once("../../db_access.php");
