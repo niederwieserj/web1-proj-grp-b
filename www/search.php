@@ -1,122 +1,143 @@
 <?php
-/** @var PDO $pdo */
-session_start();
-$_SESSION["current_page"] = "";
+    /** @var PDO $pdo */
+    session_start();
+    $_SESSION["current_page"] = "";
 
-require_once("./db_access.php");
-require_once("./display_content/format_date.php");
+    require_once("./db_access.php");
+    require_once("./display_content/format_date.php");
 
-// ----- Check search parameters -----
-if (!isset($_GET["username"]) || !isset($_GET["title"]) || !isset($_GET["category"]) || !isset($_GET["dateFrom"]) || !isset($_GET["dateTo"]) || !isset($_GET["orderBy"]) || !isset($_GET["sortOrder"]) || !isset($_GET["limit"])) {
-    // Default values
-    $username = "";
-    $title = "";
-    $category = "";
-    $date_from = "";
-    $date_to = "";
-    $order_by = "date";
-    $sort_order = "DESC";
-    $limit = "10";
+    // ----- Check search parameters -----
+    if (!isset($_GET["username"]) || !isset($_GET["title"]) || !isset($_GET["category"]) || !isset($_GET["dateFrom"]) || !isset($_GET["dateTo"]) || !isset($_GET["orderBy"]) || !isset($_GET["sortOrder"]) || !isset($_GET["limit"])) {
+        // Default values
+        $username = "";
+        $title = "";
+        $category = "";
+        $date_from = "";
+        $date_to = "";
+        $order_by = "date";
+        $sort_order = "DESC";
+        $limit = "10";
 
-    // Redirect to search page with standard parameters if any value not set in URL
-    header('Location: ' . $_SERVER['PHP_SELF'] . "?username=&title=&category=&dateFrom=&dateTo=&orderBy=".$order_by."&sortOrder=".$sort_order."&limit=".$limit);
-}
-
-// Load All Categories
-$sqlAllCategories = "SELECT category_id, name, description FROM categories";
-$stmt = $pdo->prepare($sqlAllCategories);
-$stmt->execute();
-$allCategories = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-$username = $_GET["username"];
-$title = $_GET["title"];
-
-$category = $_GET["category"];
-
-$foundCategory = false;
-
-foreach($allCategories as $row) {
-    if ($row["name"] == $category) {
-        $foundCategory = true;
-        break;
+        // Redirect to search page with standard parameters if any value not set in URL
+        header('Location: ' . $_SERVER['PHP_SELF'] . "?username=&title=&category=&dateFrom=&dateTo=&orderBy=".$order_by."&sortOrder=".$sort_order."&limit=".$limit);
     }
-}
 
-if (!$foundCategory) {
-    $category = "";
-}
+    // Load All Categories
+    $sqlAllCategories = "SELECT category_id, name, description FROM categories";
+    $stmt = $pdo->prepare($sqlAllCategories);
+    $stmt->execute();
+    $allCategories = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-$date_from = $_GET["dateFrom"];
+    $username = $_GET["username"];
+    $title = $_GET["title"];
 
-if(!DateTime::createFromFormat('Y-m-d', $date_from)) {
-    $date_from = "";
-}
+    $category = $_GET["category"];
 
-$date_to = $_GET["dateTo"];
+    $foundCategory = false;
 
-if(!DateTime::createFromFormat('Y-m-d', $date_to)) {
-    $date_to = "";
-}
+    foreach($allCategories as $row) {
+        if ($row["name"] == $category) {
+            $foundCategory = true;
+            break;
+        }
+    }
 
-$order_by = $_GET["orderBy"];
+    if (!$foundCategory) {
+        $category = "";
+    }
 
-if(!in_array($order_by, ["Date", "Username", "Title", "Category"])) {
-    $order_by = "Date";
-}
+    $date_from = $_GET["dateFrom"];
 
-$sort_order = $_GET["sortOrder"];
+    if(!DateTime::createFromFormat('Y-m-d', $date_from)) {
+        $date_from = "";
+    }
 
-if($sort_order != "ASC" && $sort_order != "DESC") {
-    $sort_order = "DESC";
-}
+    $date_to = $_GET["dateTo"];
 
-$limit = $_GET["limit"];
+    if(!DateTime::createFromFormat('Y-m-d', $date_to)) {
+        $date_to = "";
+    }
 
-if(!is_numeric($limit)) {
-    $limit = 10;
-}
+    $order_by = $_GET["orderBy"];
+
+    if(!in_array($order_by, ["Date", "Username", "Title", "Category"])) {
+        $order_by = "Date";
+    }
+
+    $sort_order = $_GET["sortOrder"];
+
+    if($sort_order != "ASC" && $sort_order != "DESC") {
+        $sort_order = "DESC";
+    }
+
+    $limit = $_GET["limit"];
+
+    if(!is_numeric($limit)) {
+        $limit = 10;
+    }
+
+    // Modify values to fit SQL syntax
+    $query_username = "%" . $username . "%";
+    $query_title = "%" . $title . "%";
+    $query_category = "%" . $category . "%";
+    $query_order_by = "";
+
+    switch ($order_by) {
+        case "Date":
+            $query_order_by = "a.created_at";
+            break;
+        case "Username":
+            $query_order_by = "users.username";
+            break;
+        case "Title":
+            $query_order_by = "a.title";
+            break;
+        case "Category":
+            $query_order_by = "categories.name";
+            break;
+        default:
+            $query_order_by = "a.created_at";
+            break;
+    }
 
 // Search articles in DB
 $query = '
-  SELECT 
-    a.article_id,
-    a.title,
-    a.created_at,
-    ai.file_path
+    SELECT 
+        a.article_id,
+        a.title,
+        a.created_at,
+        ai.file_path
     FROM articles AS a
-        LEFT JOIN article_images AS ai
+    LEFT JOIN article_images AS ai
         ON ai.FK_article_id = a.article_id
         AND ai.image_id = (
             SELECT MIN(image_id)
             FROM article_images
             WHERE FK_article_id = a.article_id
         )
-    WHERE title LIKE "%"
-        AND username LIKE :username
-        AND DATE(articles.created_at) >= :date_from
-        AND DATE(articles.created_at) <= :date_to
+    JOIN users
+	    ON FK_user_id = user_id
+    JOIN categories
+        on FK_category_id = category_id
+    WHERE users.username LIKE :username
+        AND a.title LIKE :title
         AND categories.name LIKE :category
+        AND DATE(a.created_at) >= :date_from
+        AND DATE(a.created_at) <= :date_to
         AND a.is_active = 1
-    ORDER BY :order_by :sort_order
+    ORDER BY ' . $query_order_by . ' ' . $sort_order . '
     LIMIT :limit;
-  ';
-
-  /*
-  $username = "";
-    $title = "";
-    $category = "";
-    $date_from = "";
-    $date_to = "";
-    $order_by = "date";
-    $sort_order = "DESC";
-    $limit = "10";
-  */
-    // TODO: Map variable contents to names in DB table!
+  '; // It's not optimal to insert variables directly into the query string, but should be safe due to checking. Without direct injection, it is not possible to get rid of the apostrophes which break the query.
 
     $stmt = $pdo->prepare($query);
-    $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
-    $stmt->bindParam(':start', $articles_idx_start, PDO::PARAM_INT);
-    $stmt->bindParam(':count', $articles_per_page, PDO::PARAM_INT);
+    $stmt->bindParam(':username', $query_username, PDO::PARAM_STR);
+    $stmt->bindParam(':title', $query_title, PDO::PARAM_STR);
+    $stmt->bindParam(':category', $query_category, PDO::PARAM_STR);
+    $stmt->bindParam(':date_from', $date_from, PDO::PARAM_STR);
+    $stmt->bindParam(':date_to', $date_to, PDO::PARAM_STR);
+    //$stmt->bindParam(':order_by', $query_order_by, PDO::PARAM_STR_CHAR);
+    //$stmt->bindParam(':sort_order', $sort_order, PDO::PARAM_STR_CHAR);
+    $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
     $stmt->execute();
     $articles = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
@@ -194,6 +215,33 @@ $query = '
                 <button type="submit" class="btn btn-primary">Search</button>
             </form>
         </div>
+
+        <div class="row">
+      <div class="col-8">
+      <?php foreach ($articles as $article) { ?>
+        
+          <a class="d-flex flex-column flex-lg-row gap-3 align-items-start align-items-lg-center py-3 link-body-emphasis text-decoration-none border-top position-relative" href="/articles/article.php?id=<?php echo $article["article_id"]; ?>">
+            <?php if (!empty($article["file_path"])) { ?>
+              <img src="./articles/<?php echo $article["file_path"] ?>" width="120" height="100" style="object-fit: cover;" class="rounded">
+            <?php } else { ?>
+              <div class="card border border-primary-subtle border-3" style="width: 120px; height: 100px;">
+              </div>
+            <?php } ?>
+            <div class="col-lg-8">
+              <h6 class="mb-0">
+                <?php echo $article["title"]; ?>
+              </h6>
+              <small class="text-body-secondary">
+                <?php echo format_date($article["created_at"]); ?>
+              </small>
+            </div>
+          </a>
+        
+      <?php } ?>
+      </div>
+      <div class="col-4">
+      </div>
+      </div>
 
 
     </main>
