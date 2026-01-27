@@ -11,7 +11,7 @@ $user_id = (int) ($_GET["id"] ?? 0);
 $pagination_nr = (int) ($_GET["page"] ?? 1);
 
 if (!isset($_GET["page"])) {
-    // Set page number if not not in URL
+    // Set page number if not in URL
     header('Location: '.$_SERVER['PHP_SELF']."?id=".$user_id."&page=1");
 }
 
@@ -99,7 +99,13 @@ $articles = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <head>
     <!-- write title in Browser top -->
     <?php readfile("../assets/head.html"); ?>
-    <title><?php echo $user["username"] . "'s Blog";?></title>
+    <title>
+        <?php if(!empty($user["username"])) {
+            echo $user["username"] . "'s Blog";
+        } else {
+            echo "User not found";
+        }?>
+    </title>
 </head>
 
 <body style="min-height: 100vh; display: flex; flex-direction: column;">

@@ -35,8 +35,7 @@ $is_blogger = ($user_role === "admin" || $user_role === "blogger");
             <div class="col-4 d-flex justify-content-end align-items-center">
 
                 <!-- SEARCH -->
-                <a class="link-secondary" href="#" aria-label="Search"
-                   data-bs-toggle="modal" data-bs-target="#searchModal">
+                <a class="link-secondary" href="/search.php" aria-label="Search">
                     <svg class="bi mx-3" aria-hidden="true" width="20" height="20">
                         <use xlink:href="/assets/bootstrap-5.3.8/bootstrap-icons-1.13.1/bootstrap-icons.svg#search"></use>
                     </svg>
@@ -266,44 +265,3 @@ $is_blogger = ($user_role === "admin" || $user_role === "blogger");
 </div>
 <!-- -------------------------------------------------- -->
 
-<!-- -------------------------------------------------- -->
-<!-- SEARCH MODAL -->
-<div class="modal fade" id="searchModal" tabindex="-1" aria-labelledby="searchModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
-        <div class="modal-content">
-
-            <div class="modal-header">
-                <h1 class="modal-title fs-5" id="searchModalLabel">Search articles</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-
-            <div class="modal-body">
-                <form method="get" action="/search.php" class="d-flex gap-2">
-                    <input
-                            type="text"
-                            name="q"
-                            class="form-control form-control-lg"
-                            placeholder="Type to search..."
-                            minlength="2"
-                            required
-                            autocomplete="off"
-                    >
-
-                    <button type="submit" class="btn btn-md btn-primary">
-                        Search
-                    </button>
-
-                    <a href="/search.php" class="btn btn-md btn-outline-secondary">
-                        All articles
-                    </a>
-                </form>
-
-                <div class="form-text mt-2">
-                    Enter at least 2 characters.
-                </div>
-            </div>
-
-        </div>
-    </div>
-</div>
-<!-- -------------------------------------------------- -->
