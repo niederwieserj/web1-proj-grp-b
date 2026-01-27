@@ -7,110 +7,118 @@ require_once("./db_access.php");
 require_once("./display_content/format_date.php");
 
 // ----- Check search parameters -----
-$user_id = (int) ($_GET["id"] ?? 0);
-$pagination_nr = (int) ($_GET["page"] ?? 1);
-
 if (!isset($_GET["username"]) || !isset($_GET["title"]) || !isset($_GET["category"]) || !isset($_GET["dateFrom"]) || !isset($_GET["dateTo"]) || !isset($_GET["orderBy"]) || !isset($_GET["sortOrder"]) || !isset($_GET["limit"])) {
     // Default values
     $username = "";
     $title = "";
     $category = "";
-    $dateFrom = "";
-    $dateTo = "";
-    $orderBy = "date";
-    $sortOrder = "DESC";
+    $date_from = "";
+    $date_to = "";
+    $order_by = "date";
+    $sort_order = "DESC";
     $limit = "10";
 
     // Redirect to search page with standard parameters if any value not set in URL
-    header('Location: ' . $_SERVER['PHP_SELF'] . "?username=&title=&category=&dateFrom=&dateTo=&orderBy=".$orderBy."&sortOrder=".$sortOrder."&limit=".$limit);
+    header('Location: ' . $_SERVER['PHP_SELF'] . "?username=&title=&category=&dateFrom=&dateTo=&orderBy=".$order_by."&sortOrder=".$sort_order."&limit=".$limit);
 }
+
+// Load All Categories
+$sqlAllCategories = "SELECT category_id, name, description FROM categories";
+$stmt = $pdo->prepare($sqlAllCategories);
+$stmt->execute();
+$allCategories = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 $username = $_GET["username"];
 $title = $_GET["title"];
+
 $category = $_GET["category"];
-$dateFrom = $_GET["dateFrom"];
-$dateTo = $_GET["dateTo"];
-$orderBy = $_GET["orderBy"];
-$sortOrder = $_GET["sortOrder"];
+
+$foundCategory = false;
+
+foreach($allCategories as $row) {
+    if ($row["name"] == $category) {
+        $foundCategory = true;
+        break;
+    }
+}
+
+if (!$foundCategory) {
+    $category = "";
+}
+
+$date_from = $_GET["dateFrom"];
+
+if(!DateTime::createFromFormat('Y-m-d', $date_from)) {
+    $date_from = "";
+}
+
+$date_to = $_GET["dateTo"];
+
+if(!DateTime::createFromFormat('Y-m-d', $date_to)) {
+    $date_to = "";
+}
+
+$order_by = $_GET["orderBy"];
+
+if(!in_array($order_by, ["Date", "Username", "Title", "Category"])) {
+    $order_by = "Date";
+}
+
+$sort_order = $_GET["sortOrder"];
+
+if($sort_order != "ASC" && $sort_order != "DESC") {
+    $sort_order = "DESC";
+}
+
 $limit = $_GET["limit"];
 
-// --------------------------------------------------
-// Check role (admin or blogger only)
-
-// session data comes from login.php / create_account.php
-$user_role = $_SESSION["user_role"] ?? null;
-$user_id_logged_in = $_SESSION["user_id_logged_in"] ?? null;
-
-// --------------------------------------------------
-
-// --------------------------------------------------
-// Load User data from users
-$sql = "SELECT users.user_id, users.username, users.email, users.created_at, user_image.file_path, user_image.alt_text
-        FROM users
-        LEFT JOIN user_image
-            ON users.user_id = user_image.FK_user_id
-        WHERE user_id = ?
-        AND is_active = 1
-        LIMIT 1;
-";
-
-// prepare SQL
-$stmt = $pdo->prepare($sql);
-// bind values safely
-$stmt->execute([$user_id]);
-// get result; fetch, because we return a single lines; FETCH_ASSOC returns the key and value
-$user = $stmt->fetch(PDO::FETCH_ASSOC);
-// --------------------------------------------------
-
-// Get number of user's articles for pagination
-$stmt = $pdo->prepare("SELECT COUNT(*) AS count FROM articles WHERE articles.FK_USER_ID = ?;");
-$stmt->execute([$user_id]);
-$article_count = $stmt->fetch(PDO::FETCH_ASSOC)["count"];
-
-$articles_per_page = 3;
-$total_pages = ceil($article_count / $articles_per_page);
-
-if ($total_pages < 1) {
-    $total_pages = 1;
+if(!is_numeric($limit)) {
+    $limit = 10;
 }
 
-if ($pagination_nr > $total_pages) {
-    $pagination_nr = $total_pages;
-    header('Location: ' . $_SERVER['PHP_SELF'] . "?id=" . $user_id . "&page=" . $pagination_nr);
-} else if ($pagination_nr < 1) {
-    $pagination_nr = 1;
-    header('Location: ' . $_SERVER['PHP_SELF'] . "?id=" . $user_id . "&page=" . $pagination_nr);
-}
-
-$articles_idx_start = ($pagination_nr - 1) * $articles_per_page;
-
-// Get articles of user from DB
-$query = "
+// Search articles in DB
+$query = '
   SELECT 
     a.article_id,
     a.title,
     a.created_at,
     ai.file_path
     FROM articles AS a
-    LEFT JOIN article_images AS ai
-    ON ai.FK_article_id = a.article_id
-    AND ai.image_id = (
-        SELECT MIN(image_id)
-        FROM article_images
-        WHERE FK_article_id = a.article_id
-    )
-    WHERE a.FK_USER_ID = :user_id
-    AND a.is_active = 1
-    ORDER BY created_at DESC
-    LIMIT :start,:count;
-  ";
+        LEFT JOIN article_images AS ai
+        ON ai.FK_article_id = a.article_id
+        AND ai.image_id = (
+            SELECT MIN(image_id)
+            FROM article_images
+            WHERE FK_article_id = a.article_id
+        )
+    WHERE title LIKE "%"
+        AND username LIKE :username
+        AND DATE(articles.created_at) >= :date_from
+        AND DATE(articles.created_at) <= :date_to
+        AND categories.name LIKE :category
+        AND a.is_active = 1
+    ORDER BY :order_by :sort_order
+    LIMIT :limit;
+  ';
 
-$stmt = $pdo->prepare($query);
-$stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
-$stmt->bindParam(':start', $articles_idx_start, PDO::PARAM_INT);
-$stmt->bindParam(':count', $articles_per_page, PDO::PARAM_INT);
-$stmt->execute();
-$articles = $stmt->fetchAll(PDO::FETCH_ASSOC);
+  /*
+  $username = "";
+    $title = "";
+    $category = "";
+    $date_from = "";
+    $date_to = "";
+    $order_by = "date";
+    $sort_order = "DESC";
+    $limit = "10";
+  */
+    // TODO: Map variable contents to names in DB table!
+
+    $stmt = $pdo->prepare($query);
+    $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+    $stmt->bindParam(':start', $articles_idx_start, PDO::PARAM_INT);
+    $stmt->bindParam(':count', $articles_per_page, PDO::PARAM_INT);
+    $stmt->execute();
+    $articles = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -128,7 +136,7 @@ $articles = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <form action="/search.php" method="get" class="card col d-flex flex-wrap flex-row align-items-center gap-2 p-3">
                 <div class="input-group" style="max-width: 15%;">
                     <span class="input-group-text" id="basic-addon1">@</span>
-                    <input type="text" id="username" name="username" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1">
+                    <input type="text" id="username" name="username" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1" value="<?php echo $username ?>">
                 </div>
 
                 <div class="input-group" style="max-width: 25%;">
@@ -138,37 +146,41 @@ $articles = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             </use>
                         </svg>
                     </span>
-                    <input type="text" id="title" name="title" class="form-control" placeholder="Title" aria-label="Title" aria-describedby="basic-addon2">
+                    <input type="text" id="title" name="title" class="form-control" placeholder="Title" aria-label="Title" aria-describedby="basic-addon2" value="<?php echo $title ?>">
                 </div>
 
                 <label for="category">Category</label>
                 <select class="form-select" id="category" name="category" style="max-width: 15%;" aria-label="Choose category">
-                    <option value="" selected>Choose a category</option>
-                    <option value="Lifestyle">Lifestyle</option>
-                    <option value="Travel">Travel</option>
-                    <option value="Food">Food</option>
-                    <option value="Technology">Technology</option>
-                    <option value="Health">Health</option>
+                    <option value="" <?php if($category == "") { echo "selected"; } ?>>Choose a category</option>
+                    <?php foreach($allCategories as $row) {
+                        echo '<option value="'. $row["name"] .'"';
+                        
+                        if($category == $row["name"]) {
+                            echo "selected";
+                        }
+                        
+                        echo '>'. $row["name"] .'</option>';
+                    } ?>
                 </select>
 
                 <label for="dateFrom">From date</label>
-                <input type="date" id="dateFrom" name="dateFrom" />
+                <input type="date" id="dateFrom" name="dateFrom" <?php if(!empty($date_from)) { echo "value=\"$date_from\""; } ?> />
 
                 <label for="dateTo">To date</label>
-                <input type="date" id="dateTo" name="dateTo" <?php if(!empty($dateTo)) { echo "value=\"$dateTo\""; } ?> />
+                <input type="date" id="dateTo" name="dateTo" <?php if(!empty($date_to)) { echo "value=\"$date_to\""; } ?> />
 
                 <label for="orderBy">Order by</label>
                 <select class="form-select" id="orderBy" name="orderBy" style="max-width: 10%;" aria-label="Choose order by">
-                    <option value="1">Date</option>
-                    <option value="2">Author</option>
-                    <option value="3">Title</option>
-                    <option value="4">Category</option>
+                    <option value="Date" <?php if($order_by == "Date") { echo "selected"; } ?>>Date</option>
+                    <option value="Username" <?php if($order_by == "Username") { echo "selected"; } ?>>Username</option>
+                    <option value="Title" <?php if($order_by == "Title") { echo "selected"; } ?>>Title</option>
+                    <option value="Category" <?php if($order_by == "Category") { echo "selected"; } ?>>Category</option>
                 </select>
 
                 <label for="sortOrder">Sort order</label>
                 <select class="form-select" id="sortOrder" name="sortOrder" style="max-width: 12%;" aria-label="Choose sort order">
-                    <option value="ASC">Ascending</option>
-                    <option value="DESC">Descending</option>
+                    <option value="ASC" <?php if($sort_order == "ASC") { echo "selected"; } ?>>Ascending</option>
+                    <option value="DESC" <?php if($sort_order == "DESC") { echo "selected"; } ?>>Descending</option>
                 </select>
 
                 <label for="limit">No. results</label>
