@@ -30,7 +30,8 @@ if (
     !isset($_FILES["profile_image"]) ||
     $_FILES["profile_image"]["error"] !== UPLOAD_ERR_OK
 ) {
-    die("No image uploaded");
+    header("Location: user_profile.php?id=" . (int)$user_id . "&page=1");
+    exit;
 }
 
 $file = $_FILES["profile_image"];
@@ -55,9 +56,13 @@ try {
 
     // --------------------------------------------------
     // Create upload directory if not exists
-    $upload_dir = "picture-uploads/users/";
-    if (!is_dir($upload_dir)) {
-        mkdir($upload_dir, 0777, true);
+    //  -> $uploadDirUrl: URL path (what goes into <img src> and DB)
+    //  -> $uploadDirDisk: filesystem path (for move_uploaded_file / unlink)
+    $uploadDirUrl  = "/users/picture-uploads/users/";
+    $uploadDirDisk = $_SERVER["DOCUMENT_ROOT"] . $uploadDirUrl;
+
+    if (!is_dir($uploadDirDisk)) {
+        mkdir($uploadDirDisk, 0777, true);
     }
 
     // --------------------------------------------------
@@ -70,8 +75,12 @@ try {
     $stmtOld->execute([$user_id]);
     $old_path = $stmtOld->fetchColumn();
 
-    if ($old_path && file_exists($old_path)) {
-        unlink($old_path);
+    if ($old_path) {
+        // old_path contains the URL path we stored in DB (e.g. "/users/picture-uploads/users/user_1_....png")
+        $oldDiskPath = $_SERVER["DOCUMENT_ROOT"] . $old_path;
+        if (is_file($oldDiskPath)) {
+            unlink($oldDiskPath);
+        }
     }
 
     // --------------------------------------------------
@@ -83,11 +92,15 @@ try {
     };
 
     $filename = "user_" . $user_id . "_" . time() . "." . $extension;
-    $path = $upload_dir . $filename;
+
+    // full filesystem path
+    $diskPath = $uploadDirDisk . $filename;
+    // URL path to store in DB and use in <img src="">
+    $urlPath  = $uploadDirUrl . $filename;
 
     // --------------------------------------------------
     // Move uploaded file
-    if (!move_uploaded_file($file["tmp_name"], $path)) {
+    if (!move_uploaded_file($file["tmp_name"], $diskPath)) {
         throw new Exception("Failed to save image");
     }
 
@@ -102,7 +115,7 @@ try {
     ");
     $stmtImage->execute([
         $user_id,
-        $path,
+        $urlPath, // store URL path, not filesystem path
         'Profile image of user ' . $user_id
     ]);
 
@@ -118,5 +131,5 @@ try {
 
 // --------------------------------------------------
 // Redirect back to profile page
-header("Location: user_profile.php");
+header("Location: user_profile.php?id=" . (int)$user_id . "&page=1");
 exit;

@@ -71,8 +71,11 @@ $query = "
     a.article_id,
     a.title,
     a.created_at,
-    ai.file_path
+    ai.file_path,
+    categories.name
     FROM articles AS a
+    LEFT JOIN categories
+        ON categories.category_id = a.FK_category_id
     LEFT JOIN article_images AS ai
     ON ai.FK_article_id = a.article_id
     AND ai.image_id = (
@@ -115,34 +118,48 @@ $articles = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
             <?php if (!empty($user["username"])) { ?>
 
-                <!-- User info -->
+                <!-- User info section -->
                 <div class="row">
                     <div class="col-2"></div>
-                    <!-- Profilbild -->
-                    <div class="col-8 d-flex flex-row align-items-center mb-4">
-                        <svg class="bi mx-3" aria-hidden="true" width="64" height="64">
-                            <use xlink:href="./../assets/bootstrap-5.3.8/bootstrap-icons-1.13.1/bootstrap-icons.svg#person-circle">
-                            </use>
-                        </svg>
 
+                    <div class="col-8 d-flex flex-row align-items-center mb-4">
+
+                        <!-- Profile picture (show uploaded image or fallback icon) -->
+                        <?php if (!empty($user["file_path"])): ?>
+                            <img
+                                    src="<?= htmlspecialchars($user["file_path"]) ?>"
+                                    alt="<?= htmlspecialchars($user["alt_text"] ?? 'Profile image') ?>"
+                                    class="rounded-circle mx-3"
+                                    width="64" height="64"
+                                    style="object-fit: cover;"
+                            >
+                        <?php else: ?>
+                            <svg class="bi mx-3" aria-hidden="true" width="64" height="64">
+                                <use xlink:href="./../assets/bootstrap-5.3.8/bootstrap-icons-1.13.1/bootstrap-icons.svg#person-circle"></use>
+                            </svg>
+                        <?php endif; ?>
+
+                        <!-- Username + creation date -->
                         <div class="me-auto">
                             <h4 class="m-0 pt-1"><?= htmlspecialchars($user["username"]) ?></h4>
-                            <p class="fst-italic m-0 pt-1">Blogs since <?php echo format_date(htmlspecialchars($user["created_at"])) ?></p>
+                            <p class="fst-italic m-0 pt-1">
+                                Blogs since <?= format_date($user["created_at"]) ?>
+                            </p>
                         </div>
 
+                        <!-- Edit button: only for owner or admin -->
                         <?php if ($user_id === $user_id_logged_in || $user_role === "admin") { ?>
-                            <a href="edit_user.php?id=<?= (int) $user_id ?>" class="btn btn-outline-primary float-end mt-3">
+                            <a href="edit_user.php?id=<?= (int)$user_id ?>"
+                               class="btn btn-outline-primary float-end mt-3">
                                 <svg class="bi" aria-hidden="true" width="20" height="20">
-                                    <use xlink:href="./../assets/bootstrap-5.3.8/bootstrap-icons-1.13.1/bootstrap-icons.svg#pencil">
-                                    </use>
+                                    <use xlink:href="./../assets/bootstrap-5.3.8/bootstrap-icons-1.13.1/bootstrap-icons.svg#pencil"></use>
                                 </svg>
                             </a>
                         <?php } ?>
-                        
+
                     </div>
-                    <div class="col-2">
-                        
-                    </div>
+
+                    <div class="col-2"></div>
                 </div>
 
                 <!-- Blog posts of user -->
@@ -163,7 +180,7 @@ $articles = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                     <?php echo $article["title"]; ?>
                                 </h6>
                                 <small class="text-body-secondary">
-                                    <?php echo format_date($article["created_at"]); ?>
+                                    <?= htmlspecialchars($article["name"]) ?> · <?php echo format_date($article["created_at"]); ?>
                                 </small>
                                 </div>
                             </a>

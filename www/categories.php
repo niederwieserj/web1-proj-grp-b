@@ -63,7 +63,6 @@ $_SESSION["current_page"] = $category["name"];
 <body style="min-height: 100vh; display: flex; flex-direction: column;">
 
   <?php
-  readfile("./assets/theme.html");
   require_once("./assets/navbar.php");
   ?>
 

@@ -58,75 +58,122 @@ $user = $stmt->fetch(PDO::FETCH_ASSOC);
 </head>
 
 <body style="min-height: 100vh; display: flex; flex-direction: column;">
-    <?php require_once("../assets/navbar.php"); ?>
+<?php require_once("../assets/navbar.php"); ?>
 
-    <main class="container py-5" style="flex: 1;">
+<main class="container py-5" style="flex: 1;">
+    <div class="row g-4">
+        <?php if (!empty($user["username"])): ?>
 
-        <form method="post" action="edit_user_toDb.php">
-            <div class="row g-4">
-                <?php if (!empty($user["username"])) { ?>
+            <!-- LEFT: Profile picture (own form only for the image upload) -->
+            <div class="col-md-4">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h5 class="card-title mb-3">Profile picture</h5>
 
-                    <!-- Profilbild -->
-                    <div class="col-md-4 text-center">
-                        <svg class="bi mx-1 mb-4" aria-hidden="true" width="64" height="64">
-                            <use xlink:href="./../assets/bootstrap-5.3.8/bootstrap-icons-1.13.1/bootstrap-icons.svg#person-circle">
-                            </use>
-                        </svg>
+                        <?php if (!empty($user["file_path"])): ?>
+                            <img
+                                    src="<?= htmlspecialchars($user['file_path']) ?>"
+                                    alt="<?= htmlspecialchars($user['alt_text'] ?? 'Profile image') ?>"
+                                    class="rounded-circle mb-3"
+                                    width="120" height="120"
+                                    style="object-fit: cover;"
+                            >
+                        <?php else: ?>
+                            <svg class="bi mb-3" aria-hidden="true" width="64" height="64">
+                                <use xlink:href="./../assets/bootstrap-5.3.8/bootstrap-icons-1.13.1/bootstrap-icons.svg#person-circle"></use>
+                            </svg>
+                        <?php endif; ?>
 
-                        <form method="post" action="save_profile_picture.php" enctype="multipart/form-data">
-                            <div class="mb-2">
-                                <input type="file" name="profile_image" class="form-control" accept="image/*">
+                        <!-- Separate form for uploading a new profile picture -->
+                        <form method="post"
+                              action="save_profile_picture.php"
+                              enctype="multipart/form-data">
+                            <div class="mb-2 text-start">
+                                <label class="form-label mb-1">Choose new image</label>
+                                <input type="file"
+                                       name="profile_image"
+                                       class="form-control"
+                                       accept="image/*">
                             </div>
-                            <button type="submit" class="btn btn-outline-primary btn-sm mt-2">
-                                Upload new image
+
+                            <button type="submit" class="btn btn-outline-primary btn-sm mt-2 w-100">
+                                Upload &amp; save picture
                             </button>
+
+                            <small class="text-muted d-block mt-2">
+                                JPEG, PNG or WEBP, max. 2&nbsp;MB.
+                                The picture is saved immediately after upload.
+                            </small>
                         </form>
                     </div>
+                </div>
+            </div>
 
-                    <!-- Userdaten -->
-                    <div class="col-md-8">
-                        <div class="card">
-                            <div class="card-body">
-                                <h5 class="card-title">Profile Information</h5>
+            <!-- RIGHT: User data (separate form for username/email) -->
+            <div class="col-md-8">
+                <!-- Form for updating username and email only -->
+                <form method="post" action="edit_user_toDb.php">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title mb-3">Profile information</h5>
 
-                                <input type="hidden" name="user_id" id="user_id" value="<?= $user_id ?>">
+                            <input type="hidden" name="user_id"
+                                   value="<?= (int)$user_id ?>">
 
-                                <div class="mb-3">
-                                    <label class="form-label">Username</label>
-                                    <input type="text" name="username" id="username" class="form-control" value="<?= htmlspecialchars($user["username"]) ?>" required>
-                                </div>
-
-                                <div class="mb-3">
-                                    <label class="form-label">Email</label>
-                                    <input type="email" name="email" id="email" class="form-control" value="<?= htmlspecialchars($user["email"]) ?>" required>
-                                </div>
-
-                                <div class="mb-3">
-                                    <label class="form-label">Member since</label>
-
-                                    <input type="text" class="form-control" value="<?php echo format_date(htmlspecialchars($user["created_at"])) ?>" readonly disabled>
-                                </div>
+                            <div class="mb-3">
+                                <label class="form-label">Username</label>
+                                <input type="text"
+                                       name="username"
+                                       class="form-control"
+                                       value="<?= htmlspecialchars($user["username"]) ?>"
+                                       required>
                             </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Email</label>
+                                <input type="email"
+                                       name="email"
+                                       class="form-control"
+                                       value="<?= htmlspecialchars($user["email"]) ?>"
+                                       required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Member since</label>
+                                <input type="text"
+                                       class="form-control"
+                                       value="<?= format_date($user["created_at"]) ?>"
+                                       readonly disabled>
+                            </div>
+
+                            <?php if ($user_id === ($_SESSION["user_id_logged_in"] ?? null) || $user_role === "admin"): ?>
+                                <div class="d-flex gap-2 justify-content-end mt-3">
+                                    <a href="user_profile.php?id=<?= (int)$user_id ?>"
+                                       class="btn btn-secondary">
+                                        Cancel
+                                    </a>
+                                    <button type="submit" class="btn btn-primary">
+                                        Save changes
+                                    </button>
+                                </div>
+                            <?php endif; ?>
                         </div>
                     </div>
-                    <?php if ($user_id === $_SESSION["user_id_logged_in"] || $user_role === "admin") { ?>
-                        <div class="d-flex gap-2 flex-row-reverse mt-2">
-                            <button type="submit" class="btn btn-primary">Save</button>
-                            <a href="user_profile.php?id=<?php echo $user_id ?>" class="btn btn-secondary">Cancel</a>
-                        </div>
-                    <?php } ?>
-
-
-                <?php } else {
-                    echo "User not found.";
-                }
-                ?>
+                </form>
             </div>
-        </form>
 
-    </main>
+        <?php else: ?>
+            <div class="col-12">
+                <div class="alert alert-danger mb-0">
+                    User not found.
+                </div>
+            </div>
+        <?php endif; ?>
+    </div>
+</main>
 
-    <?php readfile("../assets/footer.html"); ?>
+<?php readfile("../assets/footer.html"); ?>
 </body>
+
 
 </html>

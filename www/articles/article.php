@@ -15,10 +15,18 @@ if ($id <= 0) {
 // --------------------------------------------------
 
 // --------------------------------------------------
-// Load Article (title, author, timestamp) from article_id
-$sql = "SELECT articles.*, users.username, users.user_id
+// Load Article (title, author, timestamp) from article_id + user_image
+$sql = "SELECT 
+            articles.*,
+            users.username,
+            users.user_id,
+            user_image.file_path   AS profile_image_path,
+            user_image.alt_text    AS profile_image_alt
         FROM articles
-        LEFT JOIN users ON users.user_id = articles.FK_user_id
+        LEFT JOIN users 
+            ON users.user_id = articles.FK_user_id
+        LEFT JOIN user_image
+            ON user_image.FK_user_id = users.user_id
         WHERE articles.article_id = ?
         LIMIT 1";
 
@@ -116,14 +124,29 @@ $isAdmin = ($currentRole === "admin");
                 <div class="d-flex gap-2 justify-content-left py-5">
                     <!-- User badge -->
                     <span class="badge d-flex align-items-center p-1 pe-2 text-success-emphasis bg-success-subtle border border-success-subtle rounded-pill">
-                        <svg class="bi me-1" aria-hidden="true" width="24" height="24">
-                            <use xlink:href="./../assets/bootstrap-5.3.8/bootstrap-icons-1.13.1/bootstrap-icons.svg#person-circle">
-                            </use>
-                        </svg>
-                        <a href="/users/user_profile.php?id=<?= htmlspecialchars($article['user_id'], ENT_QUOTES, 'UTF-8') ?>" class="text-reset text-decoration-none">
-                        <?= htmlspecialchars($article["username"] ?? "Unknown", ENT_QUOTES, 'UTF-8') ?>
+
+                        <?php if (!empty($article['profile_image_path'])): ?>
+                            <!-- Show uploaded profile picture -->
+                            <img
+                                    src="/users/<?= htmlspecialchars($article['profile_image_path'], ENT_QUOTES, 'UTF-8') ?>"
+                                    alt="<?= htmlspecialchars($article['profile_image_alt'] ?? 'Profile image', ENT_QUOTES, 'UTF-8') ?>"
+                                    class="rounded-circle me-1"
+                                    width="24" height="24"
+                                    style="object-fit: cover;"
+                            >
+                        <?php else: ?>
+                            <!-- Fallback icon if no profile image -->
+                            <svg class="bi me-1" aria-hidden="true" width="24" height="24">
+                                <use xlink:href="./../assets/bootstrap-5.3.8/bootstrap-icons-1.13.1/bootstrap-icons.svg#person-circle"></use>
+                            </svg>
+                        <?php endif; ?>
+
+                        <a href="../users/user_profile.php?id=<?= htmlspecialchars($article['user_id'], ENT_QUOTES, 'UTF-8') ?>"
+                           class="text-reset text-decoration-none" target="_blank">
+                            <?= htmlspecialchars($article["username"] ?? "Unknown", ENT_QUOTES, 'UTF-8') ?>
                         </a>
                     </span>
+
 
                     <!-- Category badge -->
                     <?php if ($category): ?>

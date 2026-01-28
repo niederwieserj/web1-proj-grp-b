@@ -43,7 +43,6 @@ $_SESSION["current_page"] = "Home";
 
 <body>
     <?php
-        readfile("./assets/theme.html");
         require_once("./assets/navbar.php");
 
         if (!empty($_SESSION["flash_error"])): ?>

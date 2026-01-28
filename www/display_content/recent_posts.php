@@ -29,7 +29,7 @@
         <?php while ($stmt->fetch()) { ?>
         <li>
             <a class="d-flex flex-column flex-lg-row gap-3 align-items-start align-items-lg-center py-3 link-body-emphasis text-decoration-none border-top"
-            href="/articles/article.php?id=<?php echo $art_id; ?>">
+            href="articles/article.php?id=<?php echo $art_id; ?>">
             <?php if(!empty($art_img)) { ?>
             <img src="./articles/<?php echo $art_img ?>" width="120" height="100" style="object-fit: cover;" class="rounded">
             <?php } else { ?>
