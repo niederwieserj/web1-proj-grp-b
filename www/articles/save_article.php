@@ -64,36 +64,47 @@ try {
 
     // --------------------------------------------------
     // Images
+
+    // Upload-Verzeichnis vorbereiten, falls Ordner noch nicht exisitert, wird er erstellt
     $upload_dir = "picture-uploads/articles/";
     if (!is_dir($upload_dir)) {
         mkdir($upload_dir, 0777, true);
     }
 
+    // prüfen, ob Bilder hochgeladen wurden
     if (!empty($_FILES["images"]["name"][0])) {
         $stmtImg = $pdo->prepare("
             INSERT INTO article_images (FK_article_id, file_path, alt_text)
             VALUES (?, ?, '')
         ");
 
+        // Für jedes Bild eine Schleife
         foreach ($_FILES["images"]["name"] as $i => $name) {
+
+            // Fehler prüfen:
             if ($_FILES["images"]["error"][$i] !== UPLOAD_ERR_OK) {
                 continue;
             }
 
+            // Größe prüfen (max. 10MB pro Bild):
             if ($_FILES["images"]["size"][$i] > 10 * 1024 * 1024) {
                 throw new Exception("Image too large");
             }
 
+            // Typ prüfen:
             $mime = mime_content_type($_FILES["images"]["tmp_name"][$i]);
             if (!in_array($mime, ["image/jpeg", "image/png", "image/gif"])) {
                 throw new Exception("Invalid image type");
             }
 
+            // Eindeutigen Dateinamen erzeugen
             $filename = uniqid("img_", true) . "_" . basename($name);
             $path = $upload_dir . $filename;
 
+            // Bild im Ordner speichern
             move_uploaded_file($_FILES["images"]["tmp_name"][$i], $path);
 
+            // Bildpfad in Datenbank speichern
             $stmtImg->execute([$article_id, $path]);
         }
     }
