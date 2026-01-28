@@ -1,141 +1,188 @@
 <?php
+
+require_once($_SERVER["DOCUMENT_ROOT"] . "/db_access.php");
+
 // session data comes from login.php / create_account.php
 
 // save session role of user in $user_role
-$user_role    = $_SESSION["user_role"] ?? null;
+$user_role = $_SESSION["user_role"] ?? null;
 // get user id of user
 $is_logged_in = isset($_SESSION["user_id_logged_in"]);
 // assign roles (admin / blogger) based on $roles
-$is_admin   = ($user_role === "admin");
+$is_admin = ($user_role === "admin");
 $is_blogger = ($user_role === "admin" || $user_role === "blogger");
+
+if ($is_logged_in) {
+    $sql = "SELECT
+            file_path AS profile_image_path,
+            alt_text AS profile_image_alt
+        FROM user_image
+        WHERE FK_user_id = ?
+        ";
+
+    // prepare SQL
+    $stmt = $pdo->prepare($sql);
+    // bind values safely
+    $stmt->execute([$_SESSION["user_id_logged_in"]]);
+    // get result; fetch, not fetchAll, because we only return a single line; FETCH_ASSOC returns the key and value
+    $user_picture = $stmt->fetch(PDO::FETCH_ASSOC);
+}
 ?>
 
 <div class="container">
     <header class="border-bottom lh-1 py-3">
-        <div class="row flex-nowrap justify-content-between align-items-center">
+        <div class="row">
+            <div class="d-flex col-12 flex-wrap justify-content-center align-items-center">
+                <div class="d-inlineflex"></div>
 
-            <!-- -------------------------------------------------- -->
-            <!-- LEFT -->
-            <div class="col-4 d-flex justify-content-start align-items-center">
-                
-            </div>
-            <!-- -------------------------------------------------- -->
-
-            <!-- -------------------------------------------------- -->
-            <!-- CENTER -->
-            <div class="col-4 text-center">
-                <a class="blog-header-logo text-body-emphasis text-decoration-none" href="/index.php">
-                    Leddit
-                </a>
-            </div>
-            <!-- -------------------------------------------------- -->
-
-            <!-- -------------------------------------------------- -->
-            <!-- RIGHT -->
-            <div class="col-4 d-flex justify-content-end align-items-center">
-
-                <!-- SEARCH -->
-                <a class="link-secondary" href="/search.php" aria-label="Search">
-                    <svg class="bi mx-3" aria-hidden="true" width="20" height="20">
-                        <use xlink:href="/assets/bootstrap-5.3.8/bootstrap-icons-1.13.1/bootstrap-icons.svg#search"></use>
-                    </svg>
-                </a>
-
-                <?php if ($is_logged_in): ?>
-
-                    <div class="dropdown">
-                        <button class="btn btn-sm btn-outline-primary dropdown-toggle border-0"
-                                type="button" data-bs-toggle="dropdown">
-                            <svg class="bi" aria-hidden="true" width="16" height="16">
-                                <use
-                                    xlink:href="/assets/bootstrap-5.3.8/bootstrap-icons-1.13.1/bootstrap-icons.svg#person-circle">
-                                </use>
-                            </svg>
-                            <?= htmlspecialchars($_SESSION["user_name_logged_in"] ?? "") ?>
-                        </button>
-
-                        <ul class="dropdown-menu dropdown-menu-end">
-
-                            <li>
-                                <a class="dropdown-item" href="/users/user_profile.php?id=<?php echo $_SESSION["user_id_logged_in"]; ?>">
-                                    Profile
-                                </a>
-                            </li>
-
-                            <!-- Create Article (only Blogger an Admin) -->
-                            <?php if ($is_blogger): ?>
-                                <li>
-                                    <a class="dropdown-item" href="/articles/create_article.php">
-                                        Create Article
-                                    </a>
-                                </li>
-                            <?php endif; ?>
-
-                            <!-- BLOGGER + ADMIN -->
-                            <?php if ($is_blogger): ?>
-                                <li>
-                                    <a class="dropdown-item" href="/articles/my_articles.php">
-                                        My Articles
-                                    </a>
-                                </li>
-                            <?php endif; ?>
-
-                            <!-- ADMIN ONLY -->
-                            <?php if ($is_admin): ?>
-                                <li>
-                                    <a class="dropdown-item" href="/articles/all_articles.php">
-                                        All Articles
-                                    </a>
-                                </li>
-                                <li>
-                                    <a class="dropdown-item" href="/admin_panel/admin_panel.php">
-                                        Admin Panel
-                                    </a>
-                                </li>
-                            <?php endif; ?>
-
-                            <li><hr class="dropdown-divider"></li>
-
-                            <li>
-                                <form method="post" action="/index.php" class="m-0">
-
-                                    <!-- -------------------------------------------------- -->
-                                    <!-- value logout for index.php case  -->
-                                    <button type="submit"
-                                            name="action"
-                                            value="logout"
-                                            class="dropdown-item">
-                                        Log out
-                                    </button>
-                                    <!-- -------------------------------------------------- -->
-
-                                </form>
-                            </li>
-                        </ul>
-                    </div>
-                <?php else: ?>
-                    <a class="btn btn-sm btn-outline-secondary"
-                       data-bs-toggle="modal"
-                       data-bs-target="#loginModal">
-                        Log in
+                <!-- -------------------------------------------------- -->
+                <!-- CENTER -->
+                <div class="d-inline-flex px-3">
+                    <a class="blog-header-logo text-body-emphasis text-decoration-none" href="/index.php">
+                        Leddit
                     </a>
-                <?php endif; ?>
+                </div>
+                <!-- -------------------------------------------------- -->
+
+                <!-- -------------------------------------------------- -->
+                <!-- RIGHT -->
+
+                <!-- -------------------------------------------------- -->
             </div>
-            <!-- -------------------------------------------------- -->
         </div>
     </header>
 
-    <!-- NAV CATEGORIES -->
-    <div class="nav-scroller py-1 mb-3 border-bottom">
-        <nav class="nav nav-underline justify-content-between">
-            <a class="nav-item nav-link link-body-emphasis <?php if($_SESSION["current_page"] == "Home") { echo "active "; } ?>" href="/index.php">Home</a>
-            <a class="nav-item nav-link link-body-emphasis <?php if($_SESSION["current_page"] == "Lifestyle") { echo "active "; } ?>" href="/categories.php?category=2">Lifestyle</a>
-            <a class="nav-item nav-link link-body-emphasis <?php if($_SESSION["current_page"] == "Travel") { echo "active "; } ?>" href="/categories.php?category=3">Travel</a>
-            <a class="nav-item nav-link link-body-emphasis <?php if($_SESSION["current_page"] == "Food") { echo "active "; } ?>" href="/categories.php?category=5">Food</a>
-            <a class="nav-item nav-link link-body-emphasis <?php if($_SESSION["current_page"] == "Technology") { echo "active "; } ?>" href="/categories.php?category=1">Technology</a>
-            <a class="nav-item nav-link link-body-emphasis <?php if($_SESSION["current_page"] == "Health") { echo "active "; } ?>" href="/categories.php?category=4">Health</a>
-        </nav>
-    </div>
+    <nav class="navbar navbar-expand-lg border-bottom mb-5">
+        <div class="container-fluid">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav container-fluid d-flex justify-content-between mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link <?php if ($_SESSION["current_page"] == "Home") {
+                            echo "active ";
+                        } ?>" aria-current="page" href="/index.php">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link <?php if ($_SESSION["current_page"] == "Lifestyle") {
+                            echo "active ";
+                        } ?>" href="/categories.php?category=2">Lifestyle</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link <?php if ($_SESSION["current_page"] == "Travel") {
+                            echo "active ";
+                        } ?>" href="/categories.php?category=3">Travel</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link <?php if ($_SESSION["current_page"] == "Food") {
+                            echo "active ";
+                        } ?>" href="/categories.php?category=5">Food</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link <?php if ($_SESSION["current_page"] == "Technology") {
+                            echo "active ";
+                        } ?>" href="/categories.php?category=1">Technology</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link <?php if ($_SESSION["current_page"] == "Health") {
+                            echo "active ";
+                        } ?>" href="/categories.php?category=4">Health</a>
+                    </li>
+                    <li></li>
+                </ul>
+                <div class="d-inline-flex justify-content-end align-items-center">
+
+                    <!-- SEARCH -->
+                    <a class="link-secondary" href="/search.php" aria-label="Search">
+                        <svg class="bi me-3" aria-hidden="true" width="20" height="20">
+                            <use xlink:href="/assets/bootstrap-5.3.8/bootstrap-icons-1.13.1/bootstrap-icons.svg#search"></use>
+                        </svg>
+                    </a>
+
+                    <?php if ($is_logged_in): ?>
+
+                        <div class="dropdown">
+                            <button class="btn btn-sm btn-outline-primary dropdown-toggle border-0" type="button" data-bs-toggle="dropdown">
+                                <?php if (!empty($user_picture['profile_image_path'])): ?>
+                                    <!-- Show uploaded profile picture -->
+                                    <img src="<?= htmlspecialchars($user_picture['profile_image_path'], ENT_QUOTES, 'UTF-8') ?>" alt="<?= htmlspecialchars($user_picture['profile_image_alt'] ?? 'Profile image', ENT_QUOTES, 'UTF-8') ?>" class="rounded-circle me-1" width="16" height="16" style="object-fit: cover;">
+                                <?php else: ?>
+                                    <!-- Fallback icon if no profile image -->
+                                    <svg class="bi me-1" aria-hidden="true" width="16" height="16">
+                                        <use xlink:href="./../assets/bootstrap-5.3.8/bootstrap-icons-1.13.1/bootstrap-icons.svg#person-circle"></use>
+                                    </svg>
+                                <?php endif; ?>
+                                <?= htmlspecialchars($_SESSION["user_name_logged_in"] ?? "") ?>
+                            </button>
+
+                            <ul class="dropdown-menu dropdown-menu-end">
+
+                                <li>
+                                    <a class="dropdown-item" href="/users/user_profile.php?id=<?php echo $_SESSION["user_id_logged_in"]; ?>">
+                                        Profile
+                                    </a>
+                                </li>
+
+                                <!-- Create Article (only Blogger an Admin) -->
+                                <?php if ($is_blogger): ?>
+                                    <li>
+                                        <a class="dropdown-item" href="/articles/create_article.php">
+                                            Create Article
+                                        </a>
+                                    </li>
+                                <?php endif; ?>
+
+                                <!-- BLOGGER + ADMIN -->
+                                <?php if ($is_blogger): ?>
+                                    <li>
+                                        <a class="dropdown-item" href="/articles/my_articles.php">
+                                            My Articles
+                                        </a>
+                                    </li>
+                                <?php endif; ?>
+
+                                <!-- ADMIN ONLY -->
+                                <?php if ($is_admin): ?>
+                                    <li>
+                                        <a class="dropdown-item" href="/articles/all_articles.php">
+                                            All Articles
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="/admin_panel/admin_panel.php">
+                                            Admin Panel
+                                        </a>
+                                    </li>
+                                <?php endif; ?>
+
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+
+                                <li>
+                                    <form method="post" action="/index.php" class="m-0">
+
+                                        <!-- -------------------------------------------------- -->
+                                        <!-- value logout for index.php case  -->
+                                        <button type="submit" name="action" value="logout" class="dropdown-item">
+                                            Log out
+                                        </button>
+                                        <!-- -------------------------------------------------- -->
+
+                                    </form>
+                                </li>
+                            </ul>
+                        </div>
+                    <?php else: ?>
+                        <a class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#loginModal">
+                            Log in
+                        </a>
+                    <?php endif; ?>
+                </div>
+            </div>
+        </div>
+    </nav>
 </div>
 
 <!-- -------------------------------------------------- -->
@@ -155,24 +202,14 @@ $is_blogger = ($user_role === "admin" || $user_role === "blogger");
 
                     <div class="form-floating mb-3">
 
-                            <input
-                                    type="email"
-                                    class="form-control"
-                                    name="user-mail"
-                                    required
-                            >
+                        <input type="email" class="form-control" name="user-mail" required>
 
                         <label>Email address</label>
                     </div>
 
                     <div class="form-floating mb-3">
 
-                            <input
-                                    type="password"
-                                    class="form-control"
-                                    name="user-pw"
-                                    required
-                            >
+                        <input type="password" class="form-control" name="user-pw" required>
 
                         <label>Password</label>
                     </div>
@@ -189,10 +226,7 @@ $is_blogger = ($user_role === "admin" || $user_role === "blogger");
                     <div class="text-center mt-3">
                         <small>
                             No account yet?
-                            <a href="#"
-                               data-bs-dismiss="modal"
-                               data-bs-toggle="modal"
-                               data-bs-target="#signupModal">
+                            <a href="#" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#signupModal">
                                 Sign up here
                             </a>
                         </small>
@@ -220,34 +254,19 @@ $is_blogger = ($user_role === "admin" || $user_role === "blogger");
                 <form action="/index.php" method="POST">
                     <div class="form-floating mb-3">
 
-                            <input
-                                    type="text"
-                                    class="form-control"
-                                    name="username"
-                                    required
-                            >
+                        <input type="text" class="form-control" name="username" required>
 
                         <label>Username</label>
                     </div>
                     <div class="form-floating mb-3">
 
-                            <input
-                                    type="email"
-                                    class="form-control"
-                                    name="user-mail"
-                                    required
-                            >
+                        <input type="email" class="form-control" name="user-mail" required>
 
                         <label>Email address</label>
                     </div>
                     <div class="form-floating mb-3">
 
-                            <input
-                                    type="password"
-                                    class="form-control"
-                                    name="user-pw"
-                                    required
-                            >
+                        <input type="password" class="form-control" name="user-pw" required>
 
                         <label>Password</label>
                     </div>
@@ -264,4 +283,3 @@ $is_blogger = ($user_role === "admin" || $user_role === "blogger");
     </div>
 </div>
 <!-- -------------------------------------------------- -->
-

@@ -63,8 +63,8 @@ $_SESSION["current_page"] = "Home";
   <main class="container">
     <?php require_once("./display_content/main_posts.php");?>
 
-    <div class="row g-5">
-      <div class="col-md-8">
+    <div class="row mt-5 pe-0">
+      <div class="col-md-8 pe-0">
         <h3 class="pb-4 mb-4 fst-italic border-bottom">Featured posts</h3>
 
         <?php require_once("./display_content/featured_posts.php");?>

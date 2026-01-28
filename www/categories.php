@@ -69,7 +69,7 @@ $_SESSION["current_page"] = $category["name"];
   <main class="container" style="flex: 1;">
 
     <div class="row">
-      <div class="col-8">
+      <div class="col-md-8">
       <?php foreach ($articles as $article) { ?>
         
           <a class="d-flex flex-column flex-lg-row gap-3 align-items-start align-items-lg-center py-3 link-body-emphasis text-decoration-none border-top position-relative" href="/articles/article.php?id=<?php echo $article["article_id"]; ?>">
@@ -90,8 +90,13 @@ $_SESSION["current_page"] = $category["name"];
           </a>
         
       <?php } ?>
+      <?php
+        if (count($articles) == 0) {
+          echo "No blog posts in this category. Maybe you will write the first one?";
+        }
+      ?>
       </div>
-      <div class="col-4">
+      <div class="col-md-4">
         <div class="position-sticky" style="top: 2rem">
           <div class="p-4 mt-3 mb-3 border border-secondary rounded">
             <h4 class="fst-italic">About</h4>
