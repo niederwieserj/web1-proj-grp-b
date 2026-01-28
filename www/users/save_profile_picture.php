@@ -26,6 +26,7 @@ if (!in_array($user_role, ["admin", "blogger"], true)) {
 
 // --------------------------------------------------
 // Check uploaded file
+// Wenn kein Bild hochgeladen wurde oder Fehler, wird man zurück zum Profil geleitet
 if (
     !isset($_FILES["profile_image"]) ||
     $_FILES["profile_image"]["error"] !== UPLOAD_ERR_OK
@@ -44,23 +45,26 @@ $pdo->beginTransaction();
 try {
 
     // --------------------------------------------------
-    // Validate image
-    if ($file["size"] > 2 * 1024 * 1024) {
-        throw new Exception("Image too large (max 2MB)");
+    // Validate image (5MB max)
+    if ($file["size"] > 5 * 1024 * 1024) {
+        throw new Exception("Image too large (max 5MB)");
     }
 
+    // Typ prüfen:
     $mime = mime_content_type($file["tmp_name"]);
     if (!in_array($mime, ["image/jpeg", "image/png", "image/webp"])) {
         throw new Exception("Invalid image type");
     }
 
     // --------------------------------------------------
-    // Create upload directory if not exists
-    //  -> $uploadDirUrl: URL path (what goes into <img src> and DB)
-    //  -> $uploadDirDisk: filesystem path (for move_uploaded_file / unlink)
+
+    // öffentliche URL, unter der dein Webserver Dateien ausliefert
     $uploadDirUrl  = "/users/picture-uploads/users/";
+
+    // wo Server die Datei wirklich speichert
     $uploadDirDisk = $_SERVER["DOCUMENT_ROOT"] . $uploadDirUrl;
 
+    // Create upload directory if not exists
     if (!is_dir($uploadDirDisk)) {
         mkdir($uploadDirDisk, 0777, true);
     }

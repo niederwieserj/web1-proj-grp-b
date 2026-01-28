@@ -104,6 +104,7 @@ if (!in_array($user_role, ["admin", "blogger"], true)) {
         <div class="mb-3">
             <label for="images" class="form-label">Images</label>
 
+            <!-- array of pictures -->
             <input
                     id="images"
                     class="form-control"
