@@ -85,6 +85,7 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <th>Email</th>
             <th>Created</th>
             <th>Updated</th>
+            <th>Edit</th>
             <th>Deactivate</th>
         </tr>
         </thead>
@@ -101,6 +102,15 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <td><?= htmlspecialchars($row["email"]) ?></td>
                 <td><?php echo format_date(htmlspecialchars($row["created_at"]))?></td>
                 <td><?php echo format_date(htmlspecialchars($row["updated_at"]))?></td>
+
+                <td>
+                    <a href="../../users/edit_user.php?id=<?= (int)$row['user_id'] ?>" class="btn btn-outline-primary btn-sm">
+                        <svg class="bi mx-1" aria-hidden="true" width="16" height="16">
+                            <use xlink:href="../../assets/bootstrap-5.3.8/bootstrap-icons-1.13.1/bootstrap-icons.svg#pencil">
+                            </use>
+                        </svg>
+                    </a>
+                </td>
 
                 <td>
                     <?php if ($row["user_id"] != $user_id): ?>

@@ -106,7 +106,10 @@ $query = '
         a.article_id,
         a.title,
         a.created_at,
-        ai.file_path
+        ai.file_path,
+        users.username,
+        users.user_id,
+        categories.name
     FROM articles AS a
     LEFT JOIN article_images AS ai
         ON ai.FK_article_id = a.article_id
@@ -122,8 +125,8 @@ $query = '
     WHERE users.username LIKE :username
         AND a.title LIKE :title
         AND categories.name LIKE :category
-        AND DATE(a.created_at) >= :date_from
-        AND DATE(a.created_at) <= :date_to
+        AND (:date_from = "" OR DATE(a.created_at) >= :date_from)
+        AND (:date_to   = "" OR DATE(a.created_at) <= :date_to)
         AND a.is_active = 1
     ORDER BY ' . $query_order_by . ' ' . $sort_order . '
     LIMIT :limit;
@@ -152,99 +155,193 @@ $query = '
 <body style="min-height: 100vh; display: flex; flex-direction: column;">
     <?php require_once("./assets/navbar.php"); ?>
 
-    <main class="container d-flex flex-column py-3" style="flex: 1;">
+    <main class="container py-3" style="flex: 1;">
         <div class="row">
-            <form action="/search.php" method="get" class="card col d-flex flex-wrap flex-row align-items-center gap-2 p-3">
-                <div class="input-group" style="max-width: 15%;">
-                    <span class="input-group-text" id="basic-addon1">@</span>
-                    <input type="text" id="username" name="username" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1" value="<?php echo $username ?>">
+
+            <!-- FILTER SIDEBAR -->
+            <aside class="col-md-4 col-lg-3 mb-4">
+                <form action="/search.php" method="get" class="card p-3">
+
+                    <!-- Username -->
+                    <div class="mb-3">
+                        <label for="username" class="form-label">Username</label>
+                        <div class="input-group">
+                            <span class="input-group-text" id="basic-addon1">@</span>
+                            <input
+                                    type="text"
+                                    id="username"
+                                    name="username"
+                                    class="form-control"
+                                    placeholder="Username"
+                                    aria-label="Username"
+                                    aria-describedby="basic-addon1"
+                                    value="<?php echo htmlspecialchars($username); ?>"
+                            >
+                        </div>
+                    </div>
+
+                    <!-- Title -->
+                    <div class="mb-3">
+                        <label for="title" class="form-label">Title</label>
+                        <div class="input-group">
+                        <span class="input-group-text" id="basic-addon2">
+                            <svg class="bi" aria-hidden="true" width="1.2rem" height="1.2rem">
+                                <use xlink:href="./assets/bootstrap-5.3.8/bootstrap-icons-1.13.1/bootstrap-icons.svg#alphabet"></use>
+                            </svg>
+                        </span>
+                            <input
+                                    type="text"
+                                    id="title"
+                                    name="title"
+                                    class="form-control"
+                                    placeholder="Title"
+                                    aria-label="Title"
+                                    aria-describedby="basic-addon2"
+                                    value="<?php echo htmlspecialchars($title); ?>"
+                            >
+                        </div>
+                    </div>
+
+                    <!-- Category -->
+                    <div class="mb-3">
+                        <label for="category" class="form-label">Category</label>
+                        <select
+                                class="form-select"
+                                id="category"
+                                name="category"
+                                aria-label="Choose category"
+                        >
+                            <option value="" <?php if($category == "") { echo "selected"; } ?>>
+                                Choose a category
+                            </option>
+                            <?php foreach($allCategories as $row): ?>
+                                <option
+                                        value="<?php echo htmlspecialchars($row["name"]); ?>"
+                                        <?php if($category == $row["name"]) { echo "selected"; } ?>
+                                >
+                                    <?php echo htmlspecialchars($row["name"]); ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+
+                    <!-- Date range -->
+                    <div class="mb-3">
+                        <label class="form-label">Date range (optional)</label>
+                        <div class="d-flex flex-column gap-2">
+                            <input
+                                    type="date"
+                                    id="dateFrom"
+                                    name="dateFrom"
+                                    class="form-control"
+                                    <?php if(!empty($date_from)) { echo 'value="'.htmlspecialchars($date_from).'"'; } ?>
+                            >
+                            <input
+                                    type="date"
+                                    id="dateTo"
+                                    name="dateTo"
+                                    class="form-control"
+                                    <?php if(!empty($date_to)) { echo 'value="'.htmlspecialchars($date_to).'"'; } ?>
+                            >
+                        </div>
+                        <small class="text-body-secondary">Leave empty to ignore date filter.</small>
+                    </div>
+
+                    <!-- Order / Sort -->
+                    <div class="mb-3">
+                        <label for="orderBy" class="form-label">Order by</label>
+                        <select
+                                class="form-select"
+                                id="orderBy"
+                                name="orderBy"
+                                aria-label="Choose order by"
+                        >
+                            <option value="Date"     <?php if($order_by == "Date")     { echo "selected"; } ?>>Date</option>
+                            <option value="Username" <?php if($order_by == "Username") { echo "selected"; } ?>>Username</option>
+                            <option value="Title"    <?php if($order_by == "Title")    { echo "selected"; } ?>>Title</option>
+                            <option value="Category" <?php if($order_by == "Category") { echo "selected"; } ?>>Category</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="sortOrder" class="form-label">Sort order</label>
+                        <select
+                                class="form-select"
+                                id="sortOrder"
+                                name="sortOrder"
+                                aria-label="Choose sort order"
+                        >
+                            <option value="ASC"  <?php if($sort_order == "ASC")  { echo "selected"; } ?>>Ascending</option>
+                            <option value="DESC" <?php if($sort_order == "DESC") { echo "selected"; } ?>>Descending</option>
+                        </select>
+                    </div>
+
+                    <!-- Limit -->
+                    <div class="mb-3">
+                        <label for="limit" class="form-label">No. results</label>
+                        <select
+                                class="form-select"
+                                id="limit"
+                                name="limit"
+                                aria-label="Choose number of results"
+                        >
+                            <option value="10"  <?php if((int)$limit == 10)  { echo "selected"; } ?>>10</option>
+                            <option value="20"  <?php if((int)$limit == 20)  { echo "selected"; } ?>>20</option>
+                            <option value="50"  <?php if((int)$limit == 50)  { echo "selected"; } ?>>50</option>
+                            <option value="100" <?php if((int)$limit == 100) { echo "selected"; } ?>>100</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100">
+                        Search
+                    </button>
+                </form>
+            </aside>
+
+            <!-- RESULT LIST -->
+            <section class="col-md-4 col-lg-9">
+                <div class="row">
+                    <div class="col-12">
+                        <?php foreach ($articles as $article): ?>
+                            <a class="d-flex flex-column flex-lg-row gap-3 align-items-start align-items-lg-center py-3 link-body-emphasis text-decoration-none border-top position-relative"
+                               href="/articles/article.php?id=<?php echo (int)$article["article_id"]; ?>">
+
+                                <?php if (!empty($article["file_path"])): ?>
+                                    <img
+                                            src="./articles/<?php echo htmlspecialchars($article["file_path"]); ?>"
+                                            width="120" height="100"
+                                            style="object-fit: cover;"
+                                            class="rounded"
+                                    >
+                                <?php else: ?>
+                                    <div class="card border border-primary-subtle border-3"
+                                         style="width: 120px; height: 100px;">
+                                    </div>
+                                <?php endif; ?>
+
+                                <div class="col-lg-8">
+                                    <h6 class="mb-0">
+                                        <?php echo htmlspecialchars($article["title"]); ?>
+                                    </h6>
+                                    <small class="text-body-secondary">
+                                        <?= htmlspecialchars($article["username"]) ?>
+                                        · <?= htmlspecialchars($article["name"]) ?>
+                                        · <?= format_date($article["created_at"]) ?>
+                                    </small>
+                                </div>
+                            </a>
+                        <?php endforeach; ?>
+
+                        <?php if (empty($articles)): ?>
+                            <p class="mt-3 text-body-secondary">No results found.</p>
+                        <?php endif; ?>
+                    </div>
                 </div>
+            </section>
 
-                <div class="input-group" style="max-width: 25%;">
-                    <span class="input-group-text" id="basic-addon2">
-                        <svg class="bi" aria-hidden="true" width="1.5rem" height="1.5rem">
-                            <use xlink:href="./assets/bootstrap-5.3.8/bootstrap-icons-1.13.1/bootstrap-icons.svg#alphabet">
-                            </use>
-                        </svg>
-                    </span>
-                    <input type="text" id="title" name="title" class="form-control" placeholder="Title" aria-label="Title" aria-describedby="basic-addon2" value="<?php echo $title ?>">
-                </div>
-
-                <label for="category">Category</label>
-                <select class="form-select" id="category" name="category" style="max-width: 15%;" aria-label="Choose category">
-                    <option value="" <?php if($category == "") { echo "selected"; } ?>>Choose a category</option>
-                    <?php foreach($allCategories as $row) {
-                        echo '<option value="'. $row["name"] .'"';
-                        
-                        if($category == $row["name"]) {
-                            echo "selected";
-                        }
-                        
-                        echo '>'. $row["name"] .'</option>';
-                    } ?>
-                </select>
-
-                <label for="dateFrom">From date</label>
-                <input type="date" id="dateFrom" name="dateFrom" <?php if(!empty($date_from)) { echo "value=\"$date_from\""; } ?> />
-
-                <label for="dateTo">To date</label>
-                <input type="date" id="dateTo" name="dateTo" <?php if(!empty($date_to)) { echo "value=\"$date_to\""; } ?> />
-
-                <label for="orderBy">Order by</label>
-                <select class="form-select" id="orderBy" name="orderBy" style="max-width: 10%;" aria-label="Choose order by">
-                    <option value="Date" <?php if($order_by == "Date") { echo "selected"; } ?>>Date</option>
-                    <option value="Username" <?php if($order_by == "Username") { echo "selected"; } ?>>Username</option>
-                    <option value="Title" <?php if($order_by == "Title") { echo "selected"; } ?>>Title</option>
-                    <option value="Category" <?php if($order_by == "Category") { echo "selected"; } ?>>Category</option>
-                </select>
-
-                <label for="sortOrder">Sort order</label>
-                <select class="form-select" id="sortOrder" name="sortOrder" style="max-width: 12%;" aria-label="Choose sort order">
-                    <option value="ASC" <?php if($sort_order == "ASC") { echo "selected"; } ?>>Ascending</option>
-                    <option value="DESC" <?php if($sort_order == "DESC") { echo "selected"; } ?>>Descending</option>
-                </select>
-
-                <label for="limit">No. results</label>
-                <select class="form-select" id="limit" name="limit" style="max-width: 10%;" aria-label="Choose no. of results">
-                    <option value="10" <?php if((int) $limit == 10) { echo "selected"; } ?>>10</option>
-                    <option value="20" <?php if((int) $limit == 20) { echo "selected"; } ?>>20</option>
-                    <option value="50" <?php if((int) $limit == 50) { echo "selected"; } ?>>50</option>
-                    <option value="100" <?php if((int) $limit == 100) { echo "selected"; } ?>>100</option>
-                </select>
-
-                <button type="submit" class="btn btn-primary">Search</button>
-            </form>
         </div>
-
-        <div class="row">
-      <div class="col-8">
-      <?php foreach ($articles as $article) { ?>
-        
-          <a class="d-flex flex-column flex-lg-row gap-3 align-items-start align-items-lg-center py-3 link-body-emphasis text-decoration-none border-top position-relative" href="/articles/article.php?id=<?php echo $article["article_id"]; ?>">
-            <?php if (!empty($article["file_path"])) { ?>
-              <img src="./articles/<?php echo $article["file_path"] ?>" width="120" height="100" style="object-fit: cover;" class="rounded">
-            <?php } else { ?>
-              <div class="card border border-primary-subtle border-3" style="width: 120px; height: 100px;">
-              </div>
-            <?php } ?>
-            <div class="col-lg-8">
-              <h6 class="mb-0">
-                <?php echo $article["title"]; ?>
-              </h6>
-              <small class="text-body-secondary">
-                <?php echo format_date($article["created_at"]); ?>
-              </small>
-            </div>
-          </a>
-        
-      <?php } ?>
-      </div>
-      <div class="col-4">
-      </div>
-      </div>
-
-
     </main>
+
 
     <?php readfile("./assets/footer.html"); ?>
 </body>
