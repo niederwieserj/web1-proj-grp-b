@@ -120,9 +120,9 @@ $articles = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
                 <!-- User info section -->
                 <div class="row">
-                    <div class="col-2"></div>
+                    <div class="col-md-2"></div>
 
-                    <div class="col-8 d-flex flex-row align-items-center mb-4">
+                    <div class="col-md-8 d-flex flex-row align-items-center mb-4">
 
                         <!-- Profile picture (show uploaded image or fallback icon) -->
                         <?php if (!empty($user["file_path"])): ?>
@@ -159,14 +159,14 @@ $articles = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
                     </div>
 
-                    <div class="col-2"></div>
+                    <div class="col-md-2"></div>
                 </div>
 
                 <!-- Blog posts of user -->
                 <div class="row mt-4">
-                    <div class="col-2"></div>
-                    <div class="col-8">
-                        <h2 class="mb-4"><?= htmlspecialchars($user["username"]) ?>'s blog posts</h2>
+                    <div class="col-md-2"></div>
+                    <div class="col-md-8">
+                        <h2 class="mb-md-4"><?= htmlspecialchars($user["username"]) ?>'s blog posts</h2>
                         <?php foreach ($articles as $article) { ?>
                             <a class="d-flex flex-column flex-lg-row gap-3 align-items-start align-items-lg-center py-3 link-body-emphasis text-decoration-none border-top position-relative" href="/articles/article.php?id=<?php echo $article["article_id"]; ?>">
                                 <?php if (!empty($article["file_path"])) { ?>
@@ -191,8 +191,8 @@ $articles = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
                 <!-- Pagination -->
                 <div class="row mt-auto">
-                    <div class="col-2"></div>
-                    <div class="col-8 d-flex flex-column align-items-center">
+                    <div class="col-md-2"></div>
+                    <div class="col-md-8 d-flex flex-column align-items-center">
                         <nav aria-label="Blog post navigation">
                         <ul class="pagination">
                             <li class="page-item">
@@ -212,7 +212,7 @@ $articles = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         </ul>
                         </nav>
                     </div>
-                    <div class="col-2"></div>
+                    <div class="col-md-2"></div>
                 </div>
 
             <?php } else {

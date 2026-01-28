@@ -88,7 +88,7 @@ $isAdmin = ($currentRole === "admin");
   <!-- Article metadata -->
   <div class="row">
     <div class="col">
-      <div class="d-flex gap-2 justify-content-left py-5">
+      <div class="d-flex flex-row flex-wrap gap-2 justify-content-left py-5">
         <!-- User badge -->
         <span class="badge d-flex align-items-center p-1 pe-2 text-success-emphasis bg-success-subtle border border-success-subtle rounded-pill">
           <svg class="bi me-1" aria-hidden="true" width="24" height="24">

@@ -110,25 +110,25 @@ $isAdmin = ($currentRole === "admin");
 
         <!-- Title of article -->
         <div class="row">
-            <div class="col-2"></div>
-            <div class="col-8">
+            <div class="col-md-2"></div>
+            <div class="col-md-8 col-sm-12">
                 <h1><?= htmlspecialchars($article['title'], ENT_QUOTES, 'UTF-8') ?></h1>
             </div>
-            <div class="col-2"></div>
+            <div class="col-md-2"></div>
         </div>
 
         <!-- Article metadata -->
         <div class="row">
-            <div class="col-2"></div>
-            <div class="col-8">
-                <div class="d-flex gap-2 justify-content-left py-5">
+            <div class="col-md-2"></div>
+            <div class="col-md-8">
+                <div class="d-flex flex-row flex-wrap gap-2 justify-content-left py-5">
                     <!-- User badge -->
                     <span class="badge d-flex align-items-center p-1 pe-2 text-success-emphasis bg-success-subtle border border-success-subtle rounded-pill">
 
                         <?php if (!empty($article['profile_image_path'])): ?>
                             <!-- Show uploaded profile picture -->
                             <img
-                                    src="/users/<?= htmlspecialchars($article['profile_image_path'], ENT_QUOTES, 'UTF-8') ?>"
+                                    src="<?= htmlspecialchars($article['profile_image_path'], ENT_QUOTES, 'UTF-8') ?>"
                                     alt="<?= htmlspecialchars($article['profile_image_alt'] ?? 'Profile image', ENT_QUOTES, 'UTF-8') ?>"
                                     class="rounded-circle me-1"
                                     width="24" height="24"
@@ -142,7 +142,7 @@ $isAdmin = ($currentRole === "admin");
                         <?php endif; ?>
 
                         <a href="../users/user_profile.php?id=<?= htmlspecialchars($article['user_id'], ENT_QUOTES, 'UTF-8') ?>"
-                           class="text-reset text-decoration-none" target="_blank">
+                           class="text-reset text-decoration-none">
                             <?= htmlspecialchars($article["username"] ?? "Unknown", ENT_QUOTES, 'UTF-8') ?>
                         </a>
                     </span>
@@ -183,22 +183,22 @@ $isAdmin = ($currentRole === "admin");
                     <?php endif; ?>
                 </div>
             </div>
-            <div class="col-2"></div>
+            <div class="col-md-2"></div>
         </div>
 
         <div class="row">
-            <div class="col-2"></div>
-            <div class="col-6">
+            <div class="col-md-2"></div>
+            <div class="col-md-8 col-sm-12">
                 <?= nl2br(htmlspecialchars($article["content"], ENT_QUOTES, 'UTF-8')) ?>
             </div>
-            <div class="col-4"></div>
+            <div class="col-md-2"></div>
         </div>
 
         <!-- Picture carousel -->
         <?php if (!empty($images)): ?>
             <div class="row mt-4">
-                <div class="col-2"></div>
-                <div class="col-8">
+                <div class="col-md-2"></div>
+                <div class="col-md-8 col-sm-12">
                     <div id="carouselExample" class="carousel slide">
                         <div class="carousel-inner">
                             <?php $index = 0; ?>
@@ -219,7 +219,7 @@ $isAdmin = ($currentRole === "admin");
                         </button>
                     </div>
                 </div>
-                <div class="col-2"></div>
+                <div class="col-md-2"></div>
             </div>
         <?php endif; ?>
 
