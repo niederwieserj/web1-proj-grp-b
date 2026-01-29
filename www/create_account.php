@@ -7,6 +7,12 @@ function create_account($user_username, $user_mail, $user_pw): void
 
     require_once("db_access.php");
 
+    $db_host = "database";
+    $db_user = "root";
+    $db_password = "tiger";
+    $db_database = "blog";
+    $db_port = 3306;
+
     // --------------------------------------------------
     if (empty($user_mail) || empty($user_pw) || empty($user_username)) {
         $_SESSION["flash_error"] = "Username, email or password empty";
