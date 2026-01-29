@@ -107,7 +107,7 @@ $articles = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     <td><?php echo format_date(htmlspecialchars($row["updated_at"]))?></td>
 
                     <td>
-                        <a href="edit_article.php?id=<?= (int)$row['article_id'] ?>&return=all_articles.php" class="btn btn-outline-primary btn-sm">
+                        <a href="edit_article.php?id=<?= (int)$row['article_id'] ?>&return=my_articles.php" class="btn btn-outline-primary btn-sm">
                             <svg class="bi mx-1" aria-hidden="true" width="16" height="16">
                                 <use xlink:href="./../assets/bootstrap-5.3.8/bootstrap-icons-1.13.1/bootstrap-icons.svg#pencil">
                                 </use>
