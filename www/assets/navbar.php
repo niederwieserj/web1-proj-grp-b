@@ -176,7 +176,7 @@ if ($is_logged_in) {
                         </div>
                     <?php else: ?>
                         <a class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#loginModal">
-                            Log in
+                            Log&nbsp;in
                         </a>
                     <?php endif; ?>
                 </div>
