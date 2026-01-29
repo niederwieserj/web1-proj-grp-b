@@ -69,7 +69,7 @@ try {
     // --------------------------------------------------
 
     $pdo->commit();
-    header("Location: admin_panel.php");
+    header("Location: users.php");
     exit;
 
 } catch (Throwable $e) {
